@@ -1,0 +1,26 @@
+{
+    "name": "Villamanager",
+    "alias": "villamanager",
+    "description": "",
+    "version": "v0.1",
+    "keywords": [],
+    "active": 1,
+    "order": 1,
+    "providers": [
+        "Modules\\Villamanager\\Providers\\VillamanageServiceProvider",
+        "Modules\\Villamanager\\Providers\\RouteServiceProvider",
+        "Netshell\\Paypal\\PaypalServiceProvider"
+    ],
+    "aliases":{
+
+        "Paypal" : "Netshell\\Paypal\\Facades\\Paypal"
+
+    },
+    "files": [
+        "Http/helpers.php"
+    ],
+    "widgets": [
+        "Modules\\Villamanager\\Widgets\\VillasWidget",
+        "Modules\\Villamanager\\Widgets\\BookingWidget"
+    ]
+}
