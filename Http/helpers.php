@@ -21,7 +21,7 @@ function get_villas($limit = null){
         $end = $request->get('check_out');
 
         $villas = Villa::whereDoesntHave('bookings', function ($q) use ($start,$end){
-            
+
             $q->whereRaw('(check_in between "'.$start.'" and "'.$end.'" 
                 OR "'.$start.'" between  check_in  and  check_out  
                 OR  check_in between "'.$start.'" and "'.$end.'" 
@@ -34,10 +34,10 @@ function get_villas($limit = null){
     	if($limit == null){
 			$villas = Modules\Villamanager\Entities\Villa::all();
 		}else{
-			$villas = Modules\Villamanager\Entities\Villa::limit($limit)->get();		
-		}	
+			$villas = Modules\Villamanager\Entities\Villa::limit($limit)->get();
+		}
     }
-	
+
 	return $villas;
 }
 
@@ -49,14 +49,14 @@ function villa_url($villa){
     	$check_in = $request->get('check_in');
         $check_out = $request->get('check_out');
         $url = '?check_in='.$check_in.'&check_out='.$check_out;
-       
+
     }
 	return url('villas/'.$villa->slug.$url);
 }
 
 
 function villa_main_image($villa){
-	
+
 	return url($villa->mainImages() ? $villa->mainImages()->path : '#');
 }
 
@@ -80,12 +80,12 @@ function booking_length($check_in = null,$check_out = null){
 
 	if($check_in == null && $check_out == null){
 		$check_in = strtotime(request()->get('check_in'));
-		$check_out = strtotime(request()->get('check_out'));	
+		$check_out = strtotime(request()->get('check_out'));
 	}else{
 		$check_in = strtotime($check_in);
 		$check_out = strtotime($check_out);
 	}
-	
+
 	$datediff = $check_out - $check_in;
 
 	$rs = floor($datediff / (60 * 60 * 24));

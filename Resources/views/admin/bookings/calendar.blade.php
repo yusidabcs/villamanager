@@ -1315,6 +1315,36 @@ $( document ).ready(function() {
     return false;
   });
 
+function validateDateRange() {
+
+    var txtStartDate = $("#check_in");
+    var txtEndDate = $("#check_out");
+    var startDate;
+    var endDate;
+    var tempDate;
+
+    if (txtStartDate.val() == "")
+        return false;
+
+    if (txtEndDate.val() == "")
+        return false;
+
+    startDate = new Date(txtStartDate.val());
+    endDate = new Date(txtEndDate.val());
+    console.log(unavailableDates.length);
+    for (i = 0; i < unavailableDates.length; i++) {
+        console.log(unavailableDates[i]);
+        tempDate = new Date(unavailableDates[i]);
+        console.log(tempDate);
+
+        if (startDate < tempDate && endDate > tempDate) {
+            toastr.warning("Invalid Date Range")
+            $(this).val('');
+            return false;
+        }
+    }
+}
+
 
 $('#villa_id').on('change',function(){
     var url = $(this).find(':selected').data('url');
@@ -1339,8 +1369,29 @@ $('#villa_id').on('change',function(){
                 if(disableDays !== undefined){
                     var array = JSON.parse("[" + disableDays + "]");
                     var formattedDate = date.getFullYear()+"-"+("0" + (date.getMonth() + 1)).slice(-2)+"-"+ ("0" + date.getDate()).slice(-2);
-                    console.log(formattedDate.toString());
-                    console.log(date);
+                    unavailableDates = array[0];
+                    if ($.inArray(formattedDate.toString(), array[0]) != -1){
+                        return {
+                            enabled : false,
+                            classes : 'booked',
+                            tooltip : 'booked'
+                        };
+                    }
+                }
+
+                return;
+            }
+        };
+        var dpOptions2 = {
+            format: 'yyyy-mm-dd',
+            autoclose : true,
+            beforeShowDay: function(date){
+
+                var disableDays = data.booking_date;
+
+                if(disableDays !== undefined){
+                    var array = JSON.parse("[" + disableDays + "]");
+                    var formattedDate = date.getFullYear()+"-"+("0" + (date.getMonth() + 1)).slice(-2)+"-"+ ("0" + date.getDate()).slice(-2);
                     if ($.inArray(formattedDate.toString(), array[0]) != -1){
                         return {
                             enabled : false,
@@ -1364,8 +1415,8 @@ $('#villa_id').on('change',function(){
             datePicker2.datepicker('update');
         });
 
-        var datePicker2 = $("#check_out").
-        datepicker(dpOptions).
+        var datePicker2 = $("#check_out").on("change", validateDateRange).
+        datepicker(dpOptions2).
         on('changeDate', function (e) {
             datePicker1.datepicker('setEndDate', e.date);
             datePicker1.datepicker('update');

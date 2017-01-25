@@ -31,9 +31,6 @@
 	"autoload": {
 		"psr-4": {
 			"Modules\\Villamanager\\": ""
-		},
-        "files" : [
-            "Http/helpers.php"
-        ]
+		}
 	}
 }
