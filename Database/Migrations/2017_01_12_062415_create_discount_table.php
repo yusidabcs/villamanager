@@ -22,6 +22,8 @@ class CreateDiscountTable extends Migration {
             $table->bigInteger('claim');
             $table->bigInteger('minimumPayment');
             $table->integer('villa_id');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }

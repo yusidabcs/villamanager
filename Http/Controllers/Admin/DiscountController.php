@@ -1,23 +1,29 @@
 <?php namespace Modules\Villamanager\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Modules\Core\Foundation\Asset\Manager\AssetManager;
 use Modules\Villamanager\Entities\Discount;
 use Modules\Villamanager\Http\Requests\StoreDiscountRequest;
 use Modules\Villamanager\Repositories\DiscountRepository;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use Modules\Villamanager\Repositories\VillaRepository;
+use Pingpong\Modules\Facades\Module;
 
 class DiscountController extends AdminBaseController
 {
     private $discount;
     private $villa;
 
-    public function __construct(DiscountRepository $discount,VillaRepository $villa)
+    public function __construct(DiscountRepository $discount,VillaRepository $villa, AssetManager $assetManager)
     {
         parent::__construct();
 
         $this->discount = $discount;
         $this->villa = $villa;
+        $assetManager->addAssets([
+            'bootstrap-datepicker.js' => Module::asset('villamanager:js/bootstrap-datepicker.min.js'),
+            'bootstrap-datepicker.css' => Module::asset('villamanager:css/bootstrap-datepicker.min.css'),
+        ]);
 
     }
 

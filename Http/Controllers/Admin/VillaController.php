@@ -2,28 +2,44 @@
 
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
+use Modules\Core\Contracts\Authentication;
 use Modules\Villamanager\Entities\Villa;
+use Modules\Villamanager\Repositories\AreaRepository;
 use Modules\Villamanager\Repositories\VillaRepository;
 use Modules\Villamanager\Repositories\FacilityRepository;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use Modules\Media\Entities\File;
 use Modules\Villamanager\Http\Requests\StoreVillaRequest;
 use Modules\Villamanager\Http\Requests\UpdateVillaRequest;
+use Modules\Core\Foundation\Asset\Manager\AssetManager;
+use Pingpong\Modules\Facades\Module;
 
 class VillaController extends BaseVillaModuleController
 {
     /**
      * @var VillaRepository
      */
-    private $villa;
+    protected $villa,$facilities,$area,$auth;
 
-    public function __construct(VillaRepository $villa,FacilityRepository $facilities)
+    public function __construct(
+        VillaRepository $villa,
+        FacilityRepository $facilities,
+        AssetManager $assetManager,
+        AreaRepository $areaRepository,
+        Authentication $authentication)
     {
         parent::__construct();
 
         $this->villa = $villa;
         $this->facilities = $facilities;
+        $this->area = $areaRepository;
+        $this->auth = $authentication;
+
+        $assetManager->addAssets([
+            'villa.css' => Module::asset('villamanager:css/villa.css')
+        ]);
         $this->assetPipeline->requireCss('villa.css');
+        
     }
 
     /**
@@ -33,8 +49,9 @@ class VillaController extends BaseVillaModuleController
      */
     public function index()
     {
+        $user = $this->auth->check();
         $villas = $this->villa->all();
-        return view('villamanager::admin.villas.index', compact('villas'));
+        return view('villamanager::admin.villas.index', compact('villas','user'));
     }
 
     /**
@@ -45,9 +62,10 @@ class VillaController extends BaseVillaModuleController
     public function create()
     {
         $facilities = $this->facilities->all();
+        $areas = $this->area->all();
 
         $files = File::whereIn('id',session('villa_image'))->get();
-        return view('villamanager::admin.villas.create', compact('facilities','files'));
+        return view('villamanager::admin.villas.create', compact('facilities','files','areas'));
     }
 
     /**
@@ -74,7 +92,8 @@ class VillaController extends BaseVillaModuleController
     public function edit(Villa $villa)
     {
         $facilities = $this->facilities->all();
-        return view('villamanager::admin.villas.edit', compact('facilities','villa'));
+        $areas = $this->area->all();
+        return view('villamanager::admin.villas.edit', compact('facilities','villa','areas'));
     }
 
     /**

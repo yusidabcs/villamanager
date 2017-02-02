@@ -17,6 +17,7 @@ class CreateVillamanageVillasTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('location');
+            $table->integer('area_id');
             $table->string('slug');
             // Your fields
             $table->timestamps();

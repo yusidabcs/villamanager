@@ -4,3 +4,11 @@
     {!! $errors->first('Name', '<span class="help-block">:message</span>') !!}
 </div>
 
+<div class="checkbox" style="margin-left: 20px">
+    <label>
+        <input type="checkbox" value="1" {{ $villa->featured == 1 ? 'checked' : '' }} name="featured">
+        {{ trans('villamanager::villas.form.featured') }}
+    </label>
+</div>
+{!! $errors->first('featured', '<span class="help-block">:message</span>') !!}
+

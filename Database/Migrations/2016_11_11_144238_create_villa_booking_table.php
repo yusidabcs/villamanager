@@ -16,8 +16,8 @@ class CreateVillaBookingTable extends Migration {
         {
             $table->increments('id');
             $table->string('booking_number')->unique();
-            $table->date('check_in_date');
-            $table->date('check_out_date');
+            $table->date('check_in');
+            $table->date('check_out');
             $table->integer('adult_guest');
             $table->integer('child_guest');
             $table->integer('child_age');
@@ -34,10 +34,13 @@ class CreateVillaBookingTable extends Migration {
             $table->string('address');
             $table->string('country');
             $table->string('nationality');
-            $table->integer('total');
+            $table->bigInteger('total');
+            $table->bigInteger('total_paid');
+            $table->bigInteger('remaining_payment');
             $table->integer('status');
             $table->text('message');
             $table->string('log');
+            $table->integer('villa_id');
 
             $table->timestamps();
         });

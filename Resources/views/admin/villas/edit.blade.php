@@ -20,6 +20,11 @@
         min-height: 227px;
         margin-bottom: 20px;
     }
+
+    #map {
+        height: 300px;
+        width: 100%;
+    }
     </style>
 @stop
 
@@ -30,6 +35,12 @@
             <div class="box box-primary">
                 <div class="box-body">
                     @include('villamanager::admin.villas.partials.edit-nontrans-fields')
+                </div>
+            </div>
+
+            <div class="box box-warning">
+                <div class="box-body">
+                    @include('villamanager::admin.villas.partials.create-location')
                 </div>
             </div>
             <div class="nav-tabs-custom">
@@ -84,6 +95,46 @@
 
 @section('scripts')
     <script src="{!! Module::asset('media:js/dropzone.js') !!}"></script>
+
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlJBFpFe4vT7F5gXvMpMbL8imZETYyh3c&callback=initMap">
+    </script>
+    <script>
+        function initMap() {
+
+            $('#location').on('shown.bs.collapse', function () {
+                var loc = $('input[name=location]').val();
+                if(loc != ''){
+                    loc = loc.split(';');
+                    var myLatlng = {lat: parseFloat(loc[0]), lng: parseFloat(loc[1])};
+                }else{
+                    var myLatlng = {lat: -8.64619538277659, lng: 115.18066218750005};
+                }
+
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 12,
+                    center: myLatlng
+                });
+
+                var marker = new google.maps.Marker({
+                    position: myLatlng,
+                    map: map,
+                    draggable:true,
+                    title:"Drag me!",
+                });
+
+                marker.addListener('dragend', function() {
+                    console.log(marker.getPosition().lng());
+                    console.log(marker.getPosition().lat());
+                    $('input[name=location]').val(marker.getPosition().lat()+';'+marker.getPosition().lng())
+                } );
+
+                map.controls[google.maps.ControlPosition.TOP_CENTER].push($('#area')[0]);
+
+            })
+        }
+    </script>
+
     <script type="text/javascript">
         $( document ).ready(function() {
             $(document).keypressAction({

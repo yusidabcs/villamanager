@@ -12,7 +12,7 @@ class CreateInquiryTable extends Migration {
      */
     public function up()
     {
-        Schema::create('villamanager_inquiries', function(Blueprint $table)
+        Schema::create('villamanager__inquiries', function(Blueprint $table)
         {
             $table->increments('id');
             $table->string('inquiry_number')->unique();

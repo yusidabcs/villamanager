@@ -25,6 +25,8 @@ class Villa extends Model
     	'location',
         'slug',
         'reservation_type',
+        'area_id',
+        'featured',
     	// Translatable fields
     	'short_description',
 	    'description',
@@ -103,4 +105,45 @@ class Villa extends Model
         $rates = $this->rates()->whereRaw('"'.$date.'" between start_date and end_date')->first();
         return  $rates ? $rates->rate : 0;
     }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured',1);
+    }
+
+    public function lat()
+    {
+        $location = explode(';',$this->location);
+        return @$location[0];
+    }
+
+    public function lng()
+    {
+        $location = explode(';',$this->location);
+        return @$location[1];
+    }
+
+    public function discount()
+    {
+        return $this->hasOne(Discount::class,'villa_id');
+    }
+
+    public function discount_price($status = false)
+    {
+        $discount = $this->discount;
+        if($discount->type == 1){
+            $price = $this->price - $discount->discount;
+        }else{
+            $price = $this->price - ($this->price * $discount->discount / 100);
+        }
+
+        if($status){
+            return setting('core::currency') . ' '. $price;
+        }
+        return $price;
+
+
+
+    }
+
 }

@@ -4,12 +4,6 @@ use Illuminate\Routing\Router;
 
 /** @var Router $router */
 if (! App::runningInConsole()) {
-    
-
-    /*$router->get('/villas', [
-        'uses' => 'PublicController@homepage',
-        'as' => 'villas.index',
-    ]);*/
 
     $router->get('/villas/{slug}', [
         'uses' => 'PublicController@uri',

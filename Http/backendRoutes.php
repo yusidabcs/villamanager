@@ -283,4 +283,46 @@ $router->group(['prefix' =>'/villamanager'], function (Router $router) {
         'uses' => 'DisableDateController@destroy',
         'middleware' => 'can:villamanager.disabledates.destroy'
     ]);
+
+
+    $router->bind('area', function ($id) {
+        return app(\Modules\Villamanager\Repositories\AreaRepository::class)->find($id);
+    });
+
+    $router->get('areas', [
+        'as' => 'admin.villamanager.area.index',
+        'uses' => 'AreaController@index',
+        'middleware' => 'can:villamanager.areas.index'
+    ]);
+
+    $router->post('areas', [
+        'as' => 'admin.villamanager.area.store',
+        'uses' => 'AreaController@store',
+        'middleware' => 'can:villamanager.areas.store'
+    ]);
+
+    $router->get('areas/create', [
+        'as' => 'admin.villamanager.area.create',
+        'uses' => 'AreaController@create',
+        'middleware' => 'can:villamanager.areas.create'
+    ]);
+
+    $router->get('areas/{area}/edit', [
+        'as' => 'admin.villamanager.area.edit',
+        'uses' => 'AreaController@edit',
+        'middleware' => 'can:villamanager.areas.edit'
+    ]);
+
+    $router->put('areas/{area}', [
+        'as' => 'admin.villamanager.area.update',
+        'uses' => 'AreaController@update',
+        'middleware' => 'can:villamanager.areas.update'
+    ]);
+
+    $router->delete('areas/{area}', [
+        'as' => 'admin.villamanager.area.destroy',
+        'uses' => 'AreaController@destroy',
+        'middleware' => 'can:villamanager.areas.destroy'
+    ]);
+
 });

@@ -2,10 +2,12 @@
 
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
+use Modules\Core\Foundation\Asset\Manager\AssetManager;
 use Modules\Villamanager\Entities\Rate;
 use Modules\Villamanager\Repositories\RateRepository;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use Modules\Villamanager\Entities\Villa;
+use Pingpong\Modules\Facades\Module;
 
 
 class RateController extends AdminBaseController
@@ -15,11 +17,16 @@ class RateController extends AdminBaseController
      */
     private $rate;
 
-    public function __construct(RateRepository $rate)
+    public function __construct(RateRepository $rate,AssetManager $assetManager)
     {
         parent::__construct();
 
         $this->rate = $rate;
+
+        $assetManager->addAssets([
+            'bootstrap-datepicker.js' => Module::asset('villamanager:js/bootstrap-datepicker.js'),
+            'bootstrap-datepicker.css' => Module::asset('villamanager:css/bootstrap-datepicker.css'),
+        ]);
         $this->assetPipeline->requireJs('bootstrap-datepicker.js');
         $this->assetPipeline->requireCss('bootstrap-datepicker.css');
     }

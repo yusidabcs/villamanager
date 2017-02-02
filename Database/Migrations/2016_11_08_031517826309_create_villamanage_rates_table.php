@@ -16,6 +16,7 @@ class CreateVillamanageRatesTable extends Migration
 			$table->engine = 'InnoDB';
             $table->increments('id');
             $table->integer('villa_id');
+            $table->integer('rate');
             $table->date('start_date');
             $table->date('end_date');
             // Your fields

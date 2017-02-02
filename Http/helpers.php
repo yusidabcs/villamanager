@@ -13,14 +13,27 @@ function url_generator($key,$value)
 	return $url.'?'.$rs;
 }
 
-function get_villas($limit = null){
+function get_villas($limit = null,$options = []){
+
+
 	$request = request();
+    $villa = new Villa();
+
+    if($request->get('keyword') != '')
+    {
+        $villa = $villa->where('name','like','%'.$request->get('keyword').'%');
+    }
+
+    if($request->get('area') != '')
+    {
+        $villa = $villa->where('area_id','=',$request->get('area'));
+    }
 	if($request->has('check_in') && $request->has('check_out'))
     {
     	$start = $request->get('check_in');
         $end = $request->get('check_out');
 
-        $villas = Villa::whereDoesntHave('bookings', function ($q) use ($start,$end){
+        $villa = $villa->whereDoesntHave('bookings', function ($q) use ($start,$end){
 
             $q->whereRaw('(check_in between "'.$start.'" and "'.$end.'" 
                 OR "'.$start.'" between  check_in  and  check_out  
@@ -29,16 +42,21 @@ function get_villas($limit = null){
 
         })->whereDoesntHave('disableDates',function ($q) use ($start,$end){
             $q->whereRaw('(date between "'.$start.'" and "'.$end.'" )');
-        })->limit($limit ? $limit : 6)->get();
-    }else{
-    	if($limit == null){
-			$villas = Modules\Villamanager\Entities\Villa::all();
-		}else{
-			$villas = Modules\Villamanager\Entities\Villa::limit($limit)->get();
-		}
+        });
+    }
+    if(isset($options['featured']) && $options['featured'] == true)
+    {
+        $villa = $villa->where('featured',1);
     }
 
-	return $villas;
+    if(isset($options['discount']) && $options['discount'] == true)
+    {
+        $villa = $villa->whereHas('discount',function ($q){
+
+        });
+    }
+    $villa = $villa->paginate($limit ? $limit : 6);
+	return $villa;
 }
 
 function villa_url($villa){
@@ -233,4 +251,10 @@ function price_format($a,$status=true){ // masuk 500000 ,, keluar jadi Rp. 500.0
     }
     $string =  $temp . $string ;
     return $string;
+}
+
+
+function villa_areas()
+{
+    return \Modules\Villamanager\Entities\Area::all();
 }

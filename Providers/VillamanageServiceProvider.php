@@ -134,6 +134,19 @@ class VillamanageServiceProvider extends ServiceProvider
                 //return new \Modules\Villamanager\Repositories\Cache\CacheBookingDecorator($repository);
             }
         );
+
+        $this->app->bind(
+            'Modules\Villamanager\Repositories\AreaRepository',
+            function () {
+                $repository = new \Modules\Villamanager\Repositories\Eloquent\EloquentAreaRepository(new \Modules\Villamanager\Entities\Area());
+
+                if (! config('app.cache')) {
+                    return $repository;
+                }
+                return $repository;
+                //return new \Modules\Villamanager\Repositories\Cache\CacheBookingDecorator($repository);
+            }
+        );
 // add bindings
 
 

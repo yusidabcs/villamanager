@@ -1,14 +1,12 @@
 <?php namespace Modules\Villamanager\Http\Controllers\Admin;
 
-use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
-use Modules\Villamanager\Entities\Booking;
-use Modules\Villamanager\Entities\DisableDate;
 use Modules\Villamanager\Repositories\BookingRepository;
 use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use Modules\Villamanager\Repositories\DisableDateRepository;
 use Modules\Villamanager\Repositories\VillaRepository;
 use Modules\Villamanager\Http\Requests\StoreBookingRequest;
+use Pingpong\Modules\Facades\Module;
 
 class BookingController extends AdminBaseController
 {
@@ -23,6 +21,10 @@ class BookingController extends AdminBaseController
         $this->booking = $booking;
         $this->villa = $villa;
         $this->disable_dates = $disable_dates;
+        $this->assetManager->addAssets([
+            'bootstrap-datepicker.js' => Module::asset('villamanager:js/bootstrap-datepicker.js'),
+            'bootstrap-datepicker.css' => Module::asset('villamanager:css/bootstrap-datepicker.css'),
+        ]);
         $this->assetPipeline->requireJs('bootstrap-datepicker.js');
         $this->assetPipeline->requireCss('bootstrap-datepicker.css');
 

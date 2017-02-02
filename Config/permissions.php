@@ -71,6 +71,15 @@ return [
         'update',
         'destroy',
     ],
+
+    'villamanager.areas' => [
+        'index',
+        'create',
+        'store',
+        'edit',
+        'update',
+        'destroy',
+    ],
 // append
 
 

@@ -55,6 +55,16 @@ class SidebarExtender implements \Maatwebsite\Sidebar\SidebarExtender
                         $this->auth->hasAccess('villamanager.facilities.index')
                     );
                 });
+
+                $item->item(trans('villamanager::areas.title.areas'), function (Item $item) {
+                    $item->icon('fa fa-map');
+                    $item->weight(2);
+                    $item->append('admin.villamanager.area.create');
+                    $item->route('admin.villamanager.area.index');
+                    $item->authorize(
+                        $this->auth->hasAccess('villamanager.areas.index')
+                    );
+                });
                 $item->item(trans('villamanager::bookings.title.bookings'), function (Item $item) {
                     $item->icon('fa fa-calendar');
                     $item->weight(2);
@@ -77,7 +87,7 @@ class SidebarExtender implements \Maatwebsite\Sidebar\SidebarExtender
                 });
 
                 $item->item(trans('villamanager::discounts.title.discounts'), function (Item $item) {
-                    $item->icon('fa fa-calendar');
+                    $item->icon('fa fa-tag');
                     $item->weight(2);
                     $item->append('admin.villamanager.discount.index');
                     $item->route('admin.villamanager.discount.index');

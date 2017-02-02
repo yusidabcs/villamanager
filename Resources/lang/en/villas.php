@@ -26,6 +26,7 @@ return [
         'tos' => 'Term of Service',
         'meta_title' => 'Meta Title',
         'meta_description' => 'Meta Description',
+        'featured'  =>  'Featured Villa'
     ],
     'messages' => [
     ],

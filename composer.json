@@ -6,9 +6,8 @@
         "php": ">=5.4",
         "composer/installers": "~1.0",
         "asgardcms/core-module": "~1.0",
-        "netshell/paypal": "dev-master"
-
-
+        "netshell/paypal": "dev-master",
+        "torann/currency" : "~1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
