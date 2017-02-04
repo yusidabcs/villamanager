@@ -18,6 +18,12 @@ class CreateVillamanageVillaTranslationsTable extends Migration
             $table->text('short_description');
             $table->text('description');
             $table->text('tos');
+            $table->string('meta_title')->nullable();
+            $table->string('meta_description')->nullable();
+            $table->string('og_title')->nullable();
+            $table->string('og_description')->nullable();
+            $table->string('og_image')->nullable();
+            $table->string('og_type')->nullable();
 
             $table->integer('villa_id')->unsigned();
             $table->string('locale')->index();

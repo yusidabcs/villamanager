@@ -20,7 +20,7 @@ return [
     ],
     'booking_percentage' => [
     	'description' => 'Booking percentage',
-    	'view'	=> 'text',
+    	'view'	=> 'villamanager::fields.percent',
     	'translatable' => false
     ],
     'payment_tos' => [

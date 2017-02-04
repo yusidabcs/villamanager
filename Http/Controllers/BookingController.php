@@ -67,14 +67,14 @@ class BookingController extends BasePublicController
 
     public function show(Request $request, $id)
     {
-        $start = $request->get('check_in');
-        $end = $request->get('check_out');
+        $start = $request->get('check_in').' 14:00:00';
+        $end = $request->get('check_out').' 12:00:00';
 
         $villa = Villa::whereDoesntHave('bookings', function ($q) use ($start,$end){
 
             $q->whereRaw('(check_in between "'.$start.'" and "'.$end.'" 
                 OR "'.$start.'" between  check_in  and  check_out  
-                OR  check_in between "'.$start.'" and "'.$end.'" 
+                OR  check_out between "'.$start.'" and "'.$end.'" 
                 OR "'.$end.'" between check_in  and check_out)');
 
         })->whereDoesntHave('disableDates',function ($q) use ($start,$end){

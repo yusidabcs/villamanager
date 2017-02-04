@@ -3,6 +3,9 @@
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Modules\Core\Contracts\Authentication;
+use Modules\Core\Console\Installers\Scripts\ModuleAssets;
+use Modules\Core\Foundation\Asset\Manager\AssetManager;
+
 use Modules\Villamanager\Entities\Villa;
 use Modules\Villamanager\Repositories\AreaRepository;
 use Modules\Villamanager\Repositories\VillaRepository;
@@ -11,7 +14,6 @@ use Modules\Core\Http\Controllers\Admin\AdminBaseController;
 use Modules\Media\Entities\File;
 use Modules\Villamanager\Http\Requests\StoreVillaRequest;
 use Modules\Villamanager\Http\Requests\UpdateVillaRequest;
-use Modules\Core\Foundation\Asset\Manager\AssetManager;
 use Pingpong\Modules\Facades\Module;
 
 class VillaController extends BaseVillaModuleController
@@ -21,12 +23,10 @@ class VillaController extends BaseVillaModuleController
      */
     protected $villa,$facilities,$area,$auth;
 
-    public function __construct(
-        VillaRepository $villa,
-        FacilityRepository $facilities,
-        AssetManager $assetManager,
-        AreaRepository $areaRepository,
-        Authentication $authentication)
+    public function __construct(VillaRepository $villa,
+                                FacilityRepository $facilities,
+                                AreaRepository $areaRepository,
+                                Authentication $authentication)
     {
         parent::__construct();
 
@@ -34,8 +34,7 @@ class VillaController extends BaseVillaModuleController
         $this->facilities = $facilities;
         $this->area = $areaRepository;
         $this->auth = $authentication;
-
-        $assetManager->addAssets([
+        $this->assetManager->addAssets([
             'villa.css' => Module::asset('villamanager:css/villa.css')
         ]);
         $this->assetPipeline->requireCss('villa.css');

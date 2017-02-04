@@ -1191,6 +1191,7 @@ $( document ).ready(function() {
     selectable: false,
     selectHelper: true,
     displayEventTime : false,
+      dragRevertDuration : 0,
     select: function(start, end) {
 
       $('input[name=start_date]').val(start.format('YYYY-MM-D'));
@@ -1205,15 +1206,6 @@ $( document ).ready(function() {
 
       $('#calendar').fullCalendar('unselect');
     },
-      loading: function (bool) {
-          if (bool){
-
-          }
-          else{
-
-          }alert(1)
-          //Possibly call you feed loader to add the next feed in line
-      },
     eventResize: function(event, delta, revertFunc) {
 
 
@@ -1234,7 +1226,6 @@ $( document ).ready(function() {
 
     eventOverlap: function(stillEvent, movingEvent) {
       return false;
-
     },
       eventAfterAllRender : function () {
           $(".fc-disableButtons-button").html("<i class=\"fa fa-calendar-times-o\" aria-hidden=\"true\"></i>");
@@ -1291,7 +1282,6 @@ $( document ).ready(function() {
 
       },
 
-      dragRevertDuration : 0,
       events : <?php echo json_encode(array_merge($disable_dates,$bookings)); ?>
       
       

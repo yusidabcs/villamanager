@@ -12,7 +12,15 @@ class EloquentBookingRepository extends EloquentBaseRepository implements Bookin
 
 	}
 
-	public function all(){
+    public function create($data)
+    {
+        $data['check_in'] = $data['check_in'].' 14:00:00';
+        $data['check_out'] = $data['check_out'].' 12:00:00';
+        return $this->model->create($data);
+    }
+
+
+    public function all(){
 
 
 		if(request()->has('view')){

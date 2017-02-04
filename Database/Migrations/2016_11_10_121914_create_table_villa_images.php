@@ -21,6 +21,7 @@ class CreateTableVillaImages extends Migration {
             $table->integer('file_id')->unsigned()->nullable();
             $table->foreign('file_id')->references('id')
                 ->on('media__files')->onDelete('cascade');
+            $table->integer('thumbnail');
         });
     }
 

@@ -48,8 +48,8 @@ class Booking extends Model {
         return [
             'id' => $this->id,
             'title' => $this->villa->name.' | ' .$this->check_in . " - ".$this->check_out. ' | '.$this->title.' '.$this->first_name.' '.$this->last_name,
-            'start' => $this->check_in.' 14:00:00',
-            'end' => $this->check_out.' 12:00:00',
+            'start' => $this->check_in,
+            'end' => $this->check_out,
             'url' => url('backend/villamanager/bookings/'.$this->id.'/edit'),
             'color' => ($this->status == 0 ? '#f0ad4e' : ($this->status == 1 ? '#5cb85c' : '#585454')),
             'editable' => false,

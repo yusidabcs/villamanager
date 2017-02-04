@@ -36,7 +36,7 @@
                             <td>#<a href="{{ route('admin.villamanager.booking.edit',$booking->id) }}">{{ $booking->booking_number }}</a></td>
                             <td>
                             <a href="{{ route('admin.villamanager.booking.edit',$booking->id) }}">
-                                    {{ $booking->villa->name }}
+                                    {{ $booking->villa ? $booking->villa->name : 'No villa in this booking' }}
                                     </a>
                             </td>
                             <td>
