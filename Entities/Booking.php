@@ -50,7 +50,7 @@ class Booking extends Model {
 
         return [
             'id' => $this->id,
-            'title' => 'Booking for '. $this->villa->name.' #' .$this->booking_number,
+            'title' => 'Booking for '. ($this->villa ? $this->villa->name : '').' #' .$this->booking_number,
             'start' => $this->check_in,
             'end' => $dt->subHour(12)->format('Y-m-d H:i:s'),
             'url' => url('backend/villamanager/bookings/'.$this->id.'/edit'),
