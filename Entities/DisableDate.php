@@ -21,7 +21,7 @@ class DisableDate extends Model {
         return [
             'id' => $this->id,
             'type' => 'disable_date',
-            'title' => $this->villa->name.' | '.$this->reason,
+            'title' => ($this->villa ? $this->villa->name : '').' | '.$this->reason,
             'start' => $this->date.' 14:00:00',
             'color' => '#001f3f',
             'editable' => true,
