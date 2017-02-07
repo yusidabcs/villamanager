@@ -24,6 +24,7 @@ class BookingController extends AdminBaseController
         $this->assetManager->addAssets([
             'main.js' => Module::asset('villamanager:js/main.js'),
         ]);
+        $this->assetPipeline->requireJs('main.js');
 
     }
 
