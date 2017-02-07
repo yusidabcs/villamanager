@@ -215,28 +215,33 @@ function disabledDays($villa)
 {
 
     $disabledDays = [];
-    $bookings = \Modules\Villamanager\Entities\Booking::where('villa_id',$villa->id)->whereRaw('CURRENT_DATE BETWEEN check_in and check_out')->orderBy('check_in')->get();
+    $bookings = \Modules\Villamanager\Entities\Booking::where('villa_id',$villa->id)->whereRaw('( CURRENT_DATE BETWEEN check_in and check_out or (check_in > CURRENT_DATE) or (check_out < CURRENT_DATE) )')->orderBy('check_in')->get();
+
     foreach($bookings as $booking){
-        $dates = \Illuminate\Support\Facades\DB::select('select * from 
-(select adddate(\'1970-01-01\',t4.i*10000 + t3.i*1000 + t2.i*100 + t1.i*10 + t0.i) selected_date from
- (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
- (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
- (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
- (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
- (select 0 i union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4) v
-where selected_date between ? and ?', [$booking->check_in,$booking->check_out]);
-        foreach ($dates as $date){
-            array_push($disabledDays,$date->selected_date);
-        }
+
+        $dates = generateDateRange(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$booking->check_in),\Carbon\Carbon::createFromFormat('Y-m-d H:i:s',$booking->check_out));
+        $disabledDays = array_merge($disabledDays,$dates);
+
     }
 
     $disable_dates = \Modules\Villamanager\Entities\DisableDate::select('date')->where('villa_id',$villa->id)->whereRaw('date >= CURRENT_DATE')->get();
 
-    $rs = array_merge($disabledDays,$disable_dates->pluck('date')->toArray());
+    $rs = $disabledDays;//array_merge($disabledDays,$disable_dates->pluck('date')->toArray());
     return json_encode($rs);
 
-
 }
+
+function generateDateRange(Carbon\Carbon $start_date, Carbon\Carbon $end_date)
+{
+    $dates = [];
+
+    for($date = $start_date; $date->lte($end_date); $date->addDay()) {
+        $dates[] = $date->format('Y-m-d');
+    }
+
+    return $dates;
+}
+
 function price_format($a,$status=true){ // masuk 500000 ,, keluar jadi Rp. 500.000
     $string = $a . "";
     $tempKoma = "";

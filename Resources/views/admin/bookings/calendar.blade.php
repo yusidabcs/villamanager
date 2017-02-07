@@ -15,9 +15,10 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.css" rel="stylesheet" type="text/css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.9/select2-bootstrap.min.css" rel="stylesheet" />
-
 <link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.print.css" rel="stylesheet" media='print' />
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+<link href="http://cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.css" rel="stylesheet" />
 <style type="text/css">
     #calendar {
       max-width: 900px;
@@ -46,6 +47,9 @@
         -webkit-border-radius: 0px !important;
         -moz-border-radius: 0px !important;
         border-radius: 0px !important;
+    }
+    .qtip{
+        font-size: 12px;
     }
 
 </style>
@@ -77,7 +81,7 @@
 
           <div class="col-md-12">
 
-            <div id='calendar' data-delete="{{ route('admin.villamanager.rate.index') }}" data-disable="{{ route('admin.villamanager.disabledate.index') }}"></div>
+            <div id='calendar' data-delete="{{ route('admin.villamanager.rate.index') }}" data-url="{{ route('api.villamanger.unavailabledate').'?view=calendar'.(request()->has('villa') ? '&villa='.request()->get('villa') : '') }}" data-disable="{{ route('admin.villamanager.disabledate.index') }}"></div>
           </div>
         </div>
 
@@ -227,7 +231,7 @@
 
             <div class="form-group">
               <label for="exampleInputEmail1">Total Guest</label>
-              <input type="number" class="form-control" id="exampleInputEmail1" name="adult_guest" placeholder="Total guest" required="" min="1">
+              <input type="number" class="form-control" id="total_guest" name="adult_guest" placeholder="Total guest" required="" min="1">
             </div>
 
           </div>
@@ -238,17 +242,32 @@
           <div class="col-md-6">
 
             <div class="form-group">
-              <label for="exampleInputEmail1">Check in</label>
-              <input type="text" class="form-control" placeholder="Check in" id="check_in" name="check_in" required="">
+                <label for="exampleInputEmail1">Checkin Date </label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="daterange">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-danger"><i class="fa fa-calendar"></i> </button>
+                    </div>
+                </div>
+                <input type="hidden" class="form-control" placeholder="Check in" id="check_in" name="check_in" required="">
+                <input type="hidden" class="form-control" placeholder="Check out" id="check_out" name="check_out" required="">
             </div>
           </div>
 
           <div class="col-md-6">
-            <div class="form-group">
-              <label for="exampleInputEmail1">Check Out</label>
-              <input type="text" class="form-control" placeholder="Check out" id="check_out" name="check_out" required="">
-            </div>
 
+              <div class="form-group">
+                  <label for="exampleInputEmail1">Duration </label>
+                  <div class="input-group">
+                      <input type="number" id="total_stay" class="form-control" min="1" value="1">
+                      <div class="input-group-btn">
+                          <button type="button" class="btn btn-danger">Days </button>
+                      </div>
+                  </div>
+                  <br>
+                  <label for="exampleInputEmail1">Checkout At </label>
+                  <p id="check_out_text" class="text-info"></p>
+              </div>
           </div>
         </div>
         <hr>
@@ -1127,333 +1146,23 @@
 @section('scripts')
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.0.1/fullcalendar.min.js"></script>
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/qtip2/3.0.3/jquery.qtip.min.js"></script>
 
 <script type="text/javascript">
 $( document ).ready(function() {
-  $(document).keypressAction({
-    actions: [
-      { key: 'b', route: "<?= route('admin.villamanager.rate.index') ?>" }
-    ]
-  });
+    $(document).keypressAction({
+        actions: [
+            { key: 'b', route: "<?= route('admin.villamanager.rate.index') ?>" }
+        ]
+    });
+
 });
+
 </script>
-<script>
-$( document ).ready(function() {
-
-  //init_datepicker();
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="token"]').attr('value')
-    }
-  });
-
-  $('input[type="checkbox"].flat-blue, input[type="radio"].flat-blue').iCheck({
-    checkboxClass: 'icheckbox_flat-blue',
-    radioClass: 'iradio_flat-blue'
-  });
-
-
-  $('#calendar').fullCalendar({
-    customButtons: {
-      addButton: {
-        text: 'New Booking',
-        click: function() {
-          $('#add-booking').modal('show');
-        }
-
-      },
-        disableButtons : {
-            icon : 'circle-triangle-w',
-            click: function() {
-                if($('input[name=villa_id]').val() != ''){
-                    $('#disable-date').modal('show');
-                }else{
-                    alert('Select a villa.');
-                }
-
-            }
-        },
-      trashButton: {
-            text: 'Delete',
-        }
-    },
-    header: {
-      left: 'prev,next',
-      center: 'title',
-      right: 'addButton,disableButtons,trashButton'
-    },
-    navLinks: false, // can click day/week names to navigate views
-    selectable: false,
-    selectHelper: true,
-    displayEventTime : false,
-      dragRevertDuration : 0,
-    select: function(start, end) {
-
-      $('input[name=start_date]').val(start.format('YYYY-MM-D'));
-      $('input[name=end_date]').val(end.format('YYYY-MM-D'));
-
-      eventData = {
-        title: 'Not saved yet',
-        start: start,
-        end: end
-      };
-      $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? =
-
-      $('#calendar').fullCalendar('unselect');
-    },
-    eventResize: function(event, delta, revertFunc) {
-
-
-
-      $('input[name=start_date]').val(event.start.format('YYYY-MM-D'));
-      $('input[name=end_date]').val(event.end.subtract(1, 'seconds').format('YYYY-MM-D'));
-      $('input[name=rate]').val(parseInt(event.title));
-      $('input[name=id]').val(event.id);
-
-      if (!confirm("is this okay?")) {
-        revertFunc();
-      }
-
-    },
-    selectOverlap: function(event) {
-      return event.rendering === 'background';
-    },
-
-    eventOverlap: function(stillEvent, movingEvent) {
-      return false;
-    },
-      eventAfterAllRender : function () {
-          $(".fc-disableButtons-button").html("<i class=\"fa fa-calendar-times-o\" aria-hidden=\"true\"></i>");
-
-          $('.fc-disableButtons-button').tooltip({
-              'trigger': 'hover',
-              'title' : 'Disable date for booking'
-          });
-
-      },
-
-    eventDragStop: function(event,jsEvent) {
-
-      var trashEl = jQuery('.fc-trashButton-button');
-      var ofs = trashEl.offset();
-
-      var x1 = ofs.left;
-      var x2 = ofs.left + trashEl.outerWidth(true);
-      var y1 = ofs.top;
-      var y2 = ofs.top + trashEl.outerHeight(true);
-      if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
-        jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
-          if(window.confirm("delete this?")){
-
-            $('#calendar').fullCalendar('removeEvents', event._id);
-
-              $.ajax({
-                  url : $('#calendar').attr('data-disable')+'/'+event.id,
-                  method : 'delete',
-              }).success(function(data){
-                  toastr.success(data.message)
-
-              });
-          }
-
-        }
-      },
-
-      eventDrop: function(event, delta, revertFunc) {
-
-        $('input[name=start_date]').val(event.start.format('YYYY-MM-D'));
-        $('input[name=end_date]').val(event.end.subtract(1, 'seconds').format('YYYY-MM-D'));
-        $('input[name=rate]').val(parseInt(event.title.split(' ~ ')[1]));
-        $('input[name=name]').val(event.title.split(' ~ ')[0]);
-        $('input[name=id]').val(event.id);
-
-      },
-
-      eventClick: function(event, jsEvent, view) {
-
-        var remote_content = event.url;
-          window.location = event.url;
-        return false;
-
-      },
-
-      events : <?php echo json_encode(array_merge($disable_dates,$bookings)); ?>
-      
-      
-
-    });
-
-
-
-    /*$('select').select2({
-      theme: "bootstrap"
-    });*/
-
-  });
-
-
-  $('#select-villa').on('change', function () {
-    var url = $(this).val(); // get selected value
-    if (url) { // require a URL
-      window.location = url; // redirect
-    }
-    return false;
-  });
-
-function validateDateRange() {
-
-    var txtStartDate = $("#check_in");
-    var txtEndDate = $("#check_out");
-    var startDate;
-    var endDate;
-    var tempDate;
-
-    if (txtStartDate.val() == "")
-        return false;
-
-    if (txtEndDate.val() == "")
-        return false;
-
-    startDate = new Date(txtStartDate.val());
-    endDate = new Date(txtEndDate.val());
-    console.log(unavailableDates.length);
-    for (i = 0; i < unavailableDates.length; i++) {
-        console.log(unavailableDates[i]);
-        tempDate = new Date(unavailableDates[i]);
-        console.log(tempDate);
-
-        if (startDate < tempDate && endDate > tempDate) {
-            toastr.warning("Invalid Date Range")
-            $(this).val('');
-            return false;
-        }
-    }
-}
-
-
-$('#villa_id').on('change',function(){
-    var url = $(this).find(':selected').data('url');
-    var checkprice = $(this).find(':selected').data('checkprice');
-    if(url === undefined)
-        return;
-    $.ajax({
-        method : 'get',
-        url : url
-    }).success(function(data){
-
-        $('input[name=check_in]').val('');
-        $('input[name=check_out]').val('');
-        var now = new Date();
-        var dpOptions = {
-            format: 'yyyy-mm-dd',
-            startDate: now,
-            autoclose : true,
-            beforeShowDay: function(date){
-
-                var disableDays = data.booking_date;
-                if(disableDays !== undefined){
-                    var array = JSON.parse("[" + disableDays + "]");
-                    var formattedDate = date.getFullYear()+"-"+("0" + (date.getMonth() + 1)).slice(-2)+"-"+ ("0" + date.getDate()).slice(-2);
-                    unavailableDates = array[0];
-                    if ($.inArray(formattedDate.toString(), array[0]) != -1){
-                        return {
-                            enabled : false,
-                            classes : 'booked',
-                            tooltip : 'booked'
-                        };
-                    }
-                }
-
-                return;
-            }
-        };
-        var dpOptions2 = {
-            format: 'yyyy-mm-dd',
-            autoclose : true,
-            beforeShowDay: function(date){
-
-                var disableDays = data.booking_date;
-
-                if(disableDays !== undefined){
-                    var array = JSON.parse("[" + disableDays + "]");
-                    var formattedDate = date.getFullYear()+"-"+("0" + (date.getMonth() + 1)).slice(-2)+"-"+ ("0" + date.getDate()).slice(-2);
-                    if ($.inArray(formattedDate.toString(), array[0]) != -1){
-                        return {
-                            enabled : false,
-                            classes : 'booked',
-                            tooltip : 'booked'
-                        };
-                    }
-                }
-
-                return;
-            }
-        };
-        $("#check_in").datepicker('remove');
-        $("#check_out").datepicker('remove');
-        var datePicker1 = $("#check_in").
-        datepicker(dpOptions).
-        on('changeDate', function (e) {
-            var d = new Date(e.date.getFullYear(),(e.date.getMonth()),e.date.getDate());
-            d.setDate(d.getDate() + 1);
-            datePicker2.datepicker('setStartDate', d);
-            datePicker2.datepicker('update');
-        });
-
-        var datePicker2 = $("#check_out").on("change", validateDateRange).
-        datepicker(dpOptions2).
-        on('changeDate', function (e) {
-            datePicker1.datepicker('setEndDate', e.date);
-            datePicker1.datepicker('update');
-
-            var check_in = $('#check_in').val();
-            var check_out = $('#check_out').val();
-
-            $.ajax({
-                url: checkprice+'?check_in='+check_in+'&check_out='+check_out,
-                method : 'get'
-            }).success(function( data ) {
-                $('#total').val(data.price);
-            });
-        });
-    });
-});
-
-  function init_datepicker(){
-
-      var now = new Date();
-      var dpOptions = {
-        format: 'yyyy-mm-dd',
-        startDate: now,
-        setDate: now,
-      };
-
-      var i = 0;
-
-      var datePicker1 = $("#start_date").
-      datepicker(dpOptions).
-      on('changeDate', function (e) {
-        var d = new Date(e.date.getFullYear(),(e.date.getMonth()),e.date.getDate());
-        d.setDate(d.getDate() + 1);
-        datePicker2.datepicker('setStartDate', d);
-        datePicker2.datepicker('update');
-      });
-
-      var datePicker2 = $("#end_date").
-      datepicker(dpOptions).
-      on('changeDate', function (e) {
-        datePicker1.datepicker('setEndDate', e.date);
-        datePicker1.datepicker('update');
-      });
-
-  }
-init_datepicker();
-  </script>
 
   <script type="text/javascript">
   $( document ).ready(function() {

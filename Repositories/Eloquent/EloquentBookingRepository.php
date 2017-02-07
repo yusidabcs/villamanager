@@ -26,7 +26,7 @@ class EloquentBookingRepository extends EloquentBaseRepository implements Bookin
 		if(request()->has('view')){
 
 			if(request()->has('villa')){
-				
+
 				$bookings = $this->model->where('villa_id',request()->get('villa'))->get();
 
 			}else{
@@ -38,7 +38,6 @@ class EloquentBookingRepository extends EloquentBaseRepository implements Bookin
 			foreach ($bookings as $booking) {
 				$rs[] = $booking->fullcalender();
 			}
-
 			return $rs;	
 		}
 		return $this->model->all();

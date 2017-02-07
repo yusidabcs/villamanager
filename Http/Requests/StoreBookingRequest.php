@@ -45,9 +45,13 @@ class StoreBookingRequest extends FormRequest {
     		$villa = Villa::find($input['villa_id']); 
     	}
         
-        
-        $input['total'] = floatval(str_replace(',', '.', str_replace('.', '', booking_price($villa))));
-        $input['total_paid'] = floatval(str_replace(',', '.', str_replace('.', '', total_booking_price($villa))));
+        if(empty($input['total'])){
+            $input['total'] = floatval(str_replace(',', '.', str_replace('.', '', booking_price($villa))));
+        }
+        if(empty($input['total_paid'])){
+            $input['total_paid'] = floatval(str_replace(',', '.', str_replace('.', '', total_booking_price($villa))));
+        }
+
         if(array_key_exists('total_discount',$input)){
             $input['total_discount'] = floatval(str_replace(',', '.', str_replace('.', '', $input['total_discount'])));
         }

@@ -2,6 +2,8 @@
 
 use Illuminate\Contracts\Foundation\Application;
 use Modules\Core\Http\Controllers\BasePublicController;
+use Modules\Villamanager\Repositories\BookingRepository;
+use Modules\Villamanager\Repositories\DisableDateRepository;
 use Modules\Villamanager\Repositories\VillaRepository;
 use Illuminate\Http\Request;
 use Modules\Villamanager\Entities\Villa;
@@ -12,16 +14,20 @@ class BookingController extends BasePublicController
      * @var PageRepository
      */
     private $villa;
+    private $bookings;
+    private $disable_dates;
     /**
      * @var Application
      */
     private $app;
 
-    public function __construct(VillaRepository $villa, Application $app)
+    public function __construct(VillaRepository $villa,BookingRepository $bookingRepository,DisableDateRepository $disableDateRepository, Application $app)
     {
         parent::__construct();
         $this->villa = $villa;
         $this->app = $app;
+        $this->bookings = $bookingRepository;
+        $this->disable_dates = $disableDateRepository;
     }
 
     public function checkprice(Request $request, $id)
@@ -82,10 +88,19 @@ class BookingController extends BasePublicController
 
         return response()->json($response);
     }
-
+    public function unavailableDate(Request $request)
+    {
+        $bookings = $this->bookings->all();
+        $disable_dates = $this->disable_dates->all();
+        return response()->json(array_merge($bookings,$disable_dates));
+    }
     public function bookingdate(Request $request, $id)
     {
         $villa = $this->villa->find($id);
-        return response()->json(['booking_date' => disabledDays($villa)]);
+        return response()->json([
+            'booking_date' => disabledDays($villa),
+            'max_person'    => $villa->maxPerson()
+        ]);
+
     }
 }

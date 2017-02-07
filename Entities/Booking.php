@@ -1,5 +1,6 @@
 <?php namespace Modules\Villamanager\Entities;
    
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model {
@@ -45,16 +46,20 @@ class Booking extends Model {
     }
 
     public function fullcalender(){
+        $dt = Carbon::createFromFormat('Y-m-d H:i:s',$this->check_out);
+
         return [
             'id' => $this->id,
-            'title' => $this->villa->name.' | ' .$this->check_in . " - ".$this->check_out. ' | '.$this->title.' '.$this->first_name.' '.$this->last_name,
+            'title' => 'Booking for '. $this->villa->name.' #' .$this->booking_number,
             'start' => $this->check_in,
-            'end' => $this->check_out,
+            'end' => $dt->subHour(12)->format('Y-m-d H:i:s'),
             'url' => url('backend/villamanager/bookings/'.$this->id.'/edit'),
+            'total_guest' => $this->adult_guest,
             'color' => ($this->status == 0 ? '#f0ad4e' : ($this->status == 1 ? '#5cb85c' : '#585454')),
             'editable' => false,
             'startEditable' => false,
-            'resourceEditable' => false
+            'resourceEditable' => false,
+            'allDay' => false,
         ];
     }
 }

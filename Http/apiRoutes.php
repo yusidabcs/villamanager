@@ -6,3 +6,4 @@ use Illuminate\Routing\Router;
 
 $router->get('villamanagers/checkprice/{id}', ['uses' => 'BookingController@checkprice', 'as' => 'api.villamanger.checkprice']);
 $router->get('villamanagers/bookingdate/{id}', ['uses' => 'BookingController@bookingdate', 'as' => 'api.villamanger.bookingdate']);
+$router->get('villamanagers/unavailabledate', ['uses' => 'BookingController@unavailableDate', 'as' => 'api.villamanger.unavailabledate']);
