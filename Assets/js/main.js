@@ -14,162 +14,164 @@ $( document ).ready(function() {
         radioClass: 'iradio_flat-blue'
     });
 
+    if($('#calendar').length){
+        $('#calendar').fullCalendar({
+            customButtons: {
+                addButton: {
+                    text: 'New Booking',
+                    click: function() {
+                        $('#add-booking').modal('show');
+                    }
 
-    $('#calendar').fullCalendar({
-        customButtons: {
-            addButton: {
-                text: 'New Booking',
-                click: function() {
-                    $('#add-booking').modal('show');
+                },
+                disableButtons : {
+                    icon : 'circle-triangle-w',
+                    click: function() {
+                        if($('input[name=villa_id]').val() != ''){
+                            $('#disable-date').modal('show');
+                        }else{
+                            alert('Select a villa.');
+                        }
+
+                    }
+                },
+                trashButton: {
+                    text: 'Delete',
+                }
+            },
+            header: {
+                left: 'prev,next',
+                center: 'title',
+                right: 'addButton,disableButtons,trashButton'
+            },
+            navLinks: false, // can click day/week names to navigate views
+            selectable: false,
+            selectHelper: true,
+            displayEventTime : false,
+            dragRevertDuration : 0,
+            select: function(start, end) {
+
+                $('input[name=start_date]').val(start.format('YYYY-MM-D'));
+                $('input[name=end_date]').val(end.format('YYYY-MM-D'));
+
+                eventData = {
+                    title: 'Not saved yet',
+                    start: start,
+                    end: end
+                };
+                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? =
+
+                $('#calendar').fullCalendar('unselect');
+            },
+            eventResize: function(event, delta, revertFunc) {
+
+
+
+                $('input[name=start_date]').val(event.start.format('YYYY-MM-D'));
+                $('input[name=end_date]').val(event.end.subtract(1, 'seconds').format('YYYY-MM-D'));
+                $('input[name=rate]').val(parseInt(event.title));
+                $('input[name=id]').val(event.id);
+
+                if (!confirm("is this okay?")) {
+                    revertFunc();
                 }
 
             },
-            disableButtons : {
-                icon : 'circle-triangle-w',
-                click: function() {
-                    if($('input[name=villa_id]').val() != ''){
-                        $('#disable-date').modal('show');
-                    }else{
-                        alert('Select a villa.');
+            selectOverlap: function(event) {
+                return event.rendering === 'background';
+            },
+
+            eventOverlap: function(stillEvent, movingEvent) {
+                return false;
+            },
+            eventAfterAllRender : function () {
+                $(".fc-disableButtons-button").html("<i class=\"fa fa-calendar-times-o\" aria-hidden=\"true\"></i>");
+
+                $('.fc-disableButtons-button').tooltip({
+                    'trigger': 'hover',
+                    'title' : 'Disable date for booking'
+                });
+
+            },
+
+            eventDragStop: function(event,jsEvent) {
+
+                var trashEl = jQuery('.fc-trashButton-button');
+                var ofs = trashEl.offset();
+
+                var x1 = ofs.left;
+                var x2 = ofs.left + trashEl.outerWidth(true);
+                var y1 = ofs.top;
+                var y2 = ofs.top + trashEl.outerHeight(true);
+                if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
+                    jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
+                    if(window.confirm("delete this?")){
+
+                        $('#calendar').fullCalendar('removeEvents', event._id);
+
+                        $.ajax({
+                            url : $('#calendar').attr('data-disable')+'/'+event.id,
+                            method : 'delete',
+                        }).success(function(data){
+                            toastr.success(data.message)
+
+                        });
                     }
 
                 }
             },
-            trashButton: {
-                text: 'Delete',
-            }
-        },
-        header: {
-            left: 'prev,next',
-            center: 'title',
-            right: 'addButton,disableButtons,trashButton'
-        },
-        navLinks: false, // can click day/week names to navigate views
-        selectable: false,
-        selectHelper: true,
-        displayEventTime : false,
-        dragRevertDuration : 0,
-        select: function(start, end) {
 
-            $('input[name=start_date]').val(start.format('YYYY-MM-D'));
-            $('input[name=end_date]').val(end.format('YYYY-MM-D'));
+            eventDrop: function(event, delta, revertFunc) {
+                $('input[name=start_date]').val(event.start.format('YYYY-MM-D'));
+                $('input[name=end_date]').val(event.end.subtract(1, 'seconds').format('YYYY-MM-D'));
+                $('input[name=rate]').val(parseInt(event.title.split(' ~ ')[1]));
+                $('input[name=name]').val(event.title.split(' ~ ')[0]);
+                $('input[name=id]').val(event.id);
+            },
 
-            eventData = {
-                title: 'Not saved yet',
-                start: start,
-                end: end
-            };
-            $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? =
+            eventClick: function(event, jsEvent, view) {
 
-            $('#calendar').fullCalendar('unselect');
-        },
-        eventResize: function(event, delta, revertFunc) {
+                return false;
 
-
-
-            $('input[name=start_date]').val(event.start.format('YYYY-MM-D'));
-            $('input[name=end_date]').val(event.end.subtract(1, 'seconds').format('YYYY-MM-D'));
-            $('input[name=rate]').val(parseInt(event.title));
-            $('input[name=id]').val(event.id);
-
-            if (!confirm("is this okay?")) {
-                revertFunc();
-            }
-
-        },
-        selectOverlap: function(event) {
-            return event.rendering === 'background';
-        },
-
-        eventOverlap: function(stillEvent, movingEvent) {
-            return false;
-        },
-        eventAfterAllRender : function () {
-            $(".fc-disableButtons-button").html("<i class=\"fa fa-calendar-times-o\" aria-hidden=\"true\"></i>");
-
-            $('.fc-disableButtons-button').tooltip({
-                'trigger': 'hover',
-                'title' : 'Disable date for booking'
-            });
-
-        },
-
-        eventDragStop: function(event,jsEvent) {
-
-            var trashEl = jQuery('.fc-trashButton-button');
-            var ofs = trashEl.offset();
-
-            var x1 = ofs.left;
-            var x2 = ofs.left + trashEl.outerWidth(true);
-            var y1 = ofs.top;
-            var y2 = ofs.top + trashEl.outerHeight(true);
-            if (jsEvent.pageX >= x1 && jsEvent.pageX<= x2 &&
-                jsEvent.pageY >= y1 && jsEvent.pageY <= y2) {
-                if(window.confirm("delete this?")){
-
-                    $('#calendar').fullCalendar('removeEvents', event._id);
-
-                    $.ajax({
-                        url : $('#calendar').attr('data-disable')+'/'+event.id,
-                        method : 'delete',
-                    }).success(function(data){
-                        toastr.success(data.message)
-
-                    });
+            },
+            eventRender: function(event, element) {
+                if(event.type != 'disable_date'){
+                    element.qtip({
+                        content: {
+                            text: '<table class="table table-hover">' +
+                            '<tr><td>Check In</td><td>:</td><td>'+event.start.format('DD MMMM YYYY')+' 14:00 pm</td></tr>' +
+                            '<tr><td>Check Out</td><td>:</td><td>'+event.end.format('DD MMMM YYYY')+' 12:00 pm</td></tr>' +
+                            '<tr><td>Total Guest</td><td>:</td><td>'+event.total_guest+'</td></tr>' +
+                            '</table>'+
+                            '<center><a href="'+event.url+'" class="btn btn-sm btn-info">Detail</a></center>',
+                            title: {
+                                text: event.title,
+                                button: true
+                            }
+                        },
+                        position: {
+                            my: 'bottom center',
+                            at: 'top center',
+                            target: 'mouse',
+                            viewport: $('#calendar'),
+                            adjust: {
+                                mouse: false,
+                                scroll: false
+                            }
+                        },
+                        style: 'qtip-light'
+                    }); // end of element.qtip({
                 }
 
-            }
-        },
+            }, // end of eventRender
 
-        eventDrop: function(event, delta, revertFunc) {
-            $('input[name=start_date]').val(event.start.format('YYYY-MM-D'));
-            $('input[name=end_date]').val(event.end.subtract(1, 'seconds').format('YYYY-MM-D'));
-            $('input[name=rate]').val(parseInt(event.title.split(' ~ ')[1]));
-            $('input[name=name]').val(event.title.split(' ~ ')[0]);
-            $('input[name=id]').val(event.id);
-        },
-
-        eventClick: function(event, jsEvent, view) {
-
-            return false;
-
-        },
-        eventRender: function(event, element) {
-            if(event.type != 'disable_date'){
-                element.qtip({
-                    content: {
-                        text: '<table class="table table-hover">' +
-                        '<tr><td>Check In</td><td>:</td><td>'+event.start.format('DD MMMM YYYY')+' 14:00 pm</td></tr>' +
-                        '<tr><td>Check Out</td><td>:</td><td>'+event.end.format('DD MMMM YYYY')+' 12:00 pm</td></tr>' +
-                        '<tr><td>Total Guest</td><td>:</td><td>'+event.total_guest+'</td></tr>' +
-                        '</table>'+
-                        '<center><a href="'+event.url+'" class="btn btn-sm btn-info">Detail</a></center>',
-                        title: {
-                            text: event.title,
-                            button: true
-                        }
-                    },
-                    position: {
-                        my: 'bottom center',
-                        at: 'top center',
-                        target: 'mouse',
-                        viewport: $('#calendar'),
-                        adjust: {
-                            mouse: false,
-                            scroll: false
-                        }
-                    },
-                    style: 'qtip-light'
-                }); // end of element.qtip({
-            }
-
-        }, // end of eventRender
-
-        events : $('#calendar').attr('data-url')
+            events : $('#calendar').attr('data-url')
 
 
 
-    });
+        });
+    }
+
 
     $('select').select2({
         theme: "bootstrap"
@@ -280,4 +282,32 @@ $( document ).ready(function() {
         });
         return status;
     }
+    function init_datepicker(){
+        var now = new Date();
+        var dpOptions = {
+            format: 'yyyy-mm-dd',
+            startDate: now,
+            setDate: now,
+
+        };
+        var i = 0;
+        var datePicker1 = $("#start_date").
+        datepicker(dpOptions).
+        on('changeDate', function (e) {
+            var d = new Date(e.date.getFullYear(),(e.date.getMonth()),e.date.getDate());
+            d.setDate(d.getDate());
+            datePicker2.datepicker('setStartDate', d);
+            datePicker2.datepicker('setDate', $("#end_date").val());
+            datePicker2.datepicker('update');
+        });
+        var datePicker2 = $("#end_date").
+        datepicker({
+            format: 'yyyy-mm-dd',
+        }).
+        on('changeDate', function (e) {
+            datePicker1.datepicker('setEndDate', e.date);
+            datePicker1.datepicker('update');
+        });
+    }
+    init_datepicker();
 });

@@ -23,7 +23,11 @@ class BookingController extends AdminBaseController
         $this->disable_dates = $disable_dates;
         $this->assetManager->addAssets([
             'main.js' => Module::asset('villamanager:js/main.js'),
+            'bootstrap-datepicker.js' => Module::asset('villamanager:js/bootstrap-datepicker.min.js'),
+            'bootstrap-datepicker.css' => Module::asset('villamanager:css/bootstrap-datepicker.min.css'),
         ]);
+        $this->assetPipeline->requireJs('bootstrap-datepicker.js');
+        $this->assetPipeline->requireCss('bootstrap-datepicker.css');
         $this->assetPipeline->requireJs('main.js');
 
     }
