@@ -3,6 +3,27 @@
 
 $( document ).ready(function() {
 
+    $('#disable-date-form').on('submit',function () {
+        var btn = this;
+        $(this).find('button[type=submit]').button('loading');
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            success: function (data) {
+                toastr.success(data.message);
+            },
+            error : function () {
+                toastr.warning('Woops, something error!');
+            },
+            complete : function () {
+                $(btn).find('button[type=submit]').button('reset');
+            }
+
+        });
+        return false;
+    });
+
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="token"]').attr('value')
