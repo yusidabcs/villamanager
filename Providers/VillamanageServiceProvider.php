@@ -143,7 +143,7 @@ class VillamanageServiceProvider extends ServiceProvider
                 if (! config('app.cache')) {
                     return $repository;
                 }
-                return new \Modules\Villamanager\Repositories\Cache\CacheBookingDecorator($repository);
+                return new \Modules\Villamanager\Repositories\Cache\CacheAreaDecorator($repository);
             }
         );
 
