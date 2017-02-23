@@ -1,0 +1,7 @@
+.btn-thumbail {
+    display: none;
+}
+
+.btn-thumbail-tr:hover > .btn-thumbail {
+    display: block;
+}
