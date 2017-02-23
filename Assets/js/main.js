@@ -11,7 +11,12 @@ $( document ).ready(function() {
             url: $(this).attr('action'),
             data: $(this).serialize(),
             success: function (data) {
+
                 toastr.success(data.message);
+
+                if($('#calendar').length) {
+                    $('#calendar').fullCalendar( 'refetchEvents' );
+                }
             },
             error : function () {
                 toastr.warning('Woops, something error!');

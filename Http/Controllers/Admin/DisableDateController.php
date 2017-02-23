@@ -36,6 +36,7 @@ class DisableDateController extends AdminBaseController {
                 'reason' => $request->get('reason')
             ]);
             $rs->save();
+            $date->format('Y-m-d');
         }
 
         if($request->ajax()){

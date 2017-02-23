@@ -38,7 +38,7 @@ class EloquentBookingRepository extends EloquentBaseRepository implements Bookin
 			foreach ($bookings as $booking) {
 				$rs[] = $booking->fullcalender();
 			}
-			return $rs;	
+			return $rs;
 		}
 		return $this->model->all();
 
