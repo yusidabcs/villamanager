@@ -33,7 +33,25 @@ class BookingController extends BasePublicController
     public function checkprice(Request $request, $id)
     {
         $response = [];
-        $villa = $this->villa->find($id);
+
+        //validate date
+        $start = $request->get('check_in').' 14:00:00';
+        $end = $request->get('check_out').' 12:00:00';
+
+        $villa = Villa::where('id',$id)->whereDoesntHave('bookings', function ($q) use ($start,$end){
+
+            $q->whereRaw('(check_in between "'.$start.'" and "'.$end.'" 
+                OR "'.$start.'" between  check_in  and  check_out  
+                OR  check_in between "'.$start.'" and "'.$end.'" 
+                OR "'.$end.'" between check_in  and check_out) and status != 2');
+
+        })->whereDoesntHave('disableDates',function ($q) use ($start,$end){
+            $q->whereRaw('(date between "'.$start.'" and "'.$end.'" )');
+        })->first();
+        if(!$villa)
+            return response()->json([
+                'error' => 'The villa is not available on the date range.'
+            ]);
 
         $discount_code = request()->get('discount_code');
         $total_booking = floatval(str_replace(',', '.', str_replace('.', '', booking_price($villa))));
@@ -91,11 +109,7 @@ class BookingController extends BasePublicController
     public function unavailableDate(Request $request)
     {
         $bookings = $this->bookings->all();
-        if(!$bookings)
-            $bookings = [];
         $disable_dates = $this->disable_dates->all();
-        if(!$disable_dates)
-            $disable_dates = [];
         return response()->json(array_merge($bookings,$disable_dates));
     }
     public function bookingdate(Request $request, $id)

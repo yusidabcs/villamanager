@@ -26,17 +26,16 @@ class DisableDateController extends AdminBaseController {
         for($date = $start_date; $date->lte($end_date); $date->addDay()) {
             $disable_date[] = [
                 'villa_id' => $request->get('villa_id'),
-                'date' => $date->format('Y-m-d'),
+                'date' => $date->format('Y-m-d 14:00:00'),
                 'reason' => $request->get('reason')
             ];
 
             $rs = DisableDate::firstOrNew([
                 'villa_id' => $request->get('villa_id'),
-                'date' => $date->format('Y-m-d'),
+                'date' => $date->format('Y-m-d 14:00:00'),
                 'reason' => $request->get('reason')
             ]);
             $rs->save();
-            $date->format('Y-m-d');
         }
 
         if($request->ajax()){
