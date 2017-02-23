@@ -14,6 +14,20 @@ class CacheBookingDecorator extends BaseCacheDecorator implements BookingReposit
 
     public function findByBookingNumber($id)
     {
-        // TODO: Implement findByBookingNumber() method.
+        return $this->repository->findByBookingNumber($id);
     }
+
+    public function all()
+    {
+        return $this->cache
+            ->tags($this->entityName, 'private')
+            ->remember("{$this->locale}.{$this->entityName}.all", $this->cacheTime,
+                function () {
+                    return $this->repository->all();
+                }
+            );
+
+    }
+
+
 }

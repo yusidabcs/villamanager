@@ -139,14 +139,14 @@
 
                         <div class="form-group">
                             <label for="exampleInputEmail1">Start Date</label>
-                            <input type="text" class="form-control" placeholder="Check in" id="start_date" name="start_date" required="">
+                            <input type="text" class="form-control" placeholder="Start Date" id="start_date" name="start_date" required="">
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="exampleInputEmail1">End Date</label>
-                            <input type="text" class="form-control" placeholder="Check out" id="end_date" name="end_date" required="">
+                            <input type="text" class="form-control" placeholder="End Date" id="end_date" name="end_date" required="">
                         </div>
 
                     </div>
