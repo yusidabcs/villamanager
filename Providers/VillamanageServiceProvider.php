@@ -160,7 +160,6 @@ class VillamanageServiceProvider extends ServiceProvider
                 //return new \Modules\Villamanager\Repositories\Cache\CacheBookingDecorator($repository);
             }
         );
-// add bindings
 
 
 

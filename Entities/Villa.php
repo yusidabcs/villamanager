@@ -76,7 +76,6 @@ class Villa extends Model
     public function category(){
         return $this->belongsTo(VillaCategory::class,'category_id');
     }
-
     public function cheapest_rates(){
          return $this->hasOne(Rate::class)->orderBy('rate','asc')->whereRaw('( CURRENT_DATE() BETWEEN start_date and end_date  or CURRENT_DATE() < start_date )');
     }

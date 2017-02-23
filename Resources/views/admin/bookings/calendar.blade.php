@@ -130,8 +130,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">Disable Date</h4>
             </div>
-
-            {!! Form::open(['url' => route('admin.villamanager.disabledate.store') , 'method' => 'post', 'class' => 'form']) !!}
+            {!! Form::open(['url' => route('admin.villamanager.disabledate.store') , 'method' => 'post', 'class' => 'form','id' => 'disable-date-form']) !!}
             <input type="hidden" name="villa_id" value="{{ request('villa') }}">
             <div class="modal-body">
 

@@ -87,7 +87,6 @@ class VillaController extends BaseVillaModuleController
             return redirect()->route('admin.villamanager.villa.index');
         }
         return redirect()->back();
-
     }
 
     /**

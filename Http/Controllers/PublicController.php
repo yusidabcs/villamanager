@@ -4,6 +4,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Modules\Core\Http\Controllers\BasePublicController;
 use Modules\Villamanager\Repositories\VillaRepository;
 use Illuminate\Http\Request;
+use Modules\Villamanager\Entities\Villa;
 class PublicController extends BasePublicController
 {
     /**

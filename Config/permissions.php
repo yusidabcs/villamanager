@@ -80,7 +80,6 @@ return [
         'update',
         'destroy',
     ],
-
     'villamanager.categories' => [
         'index',
         'create',
@@ -89,7 +88,6 @@ return [
         'update',
         'destroy',
     ],
-// append
 
 
 

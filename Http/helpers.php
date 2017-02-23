@@ -53,7 +53,7 @@ function get_villas($limit = null,$options = []){
             $q->whereRaw('(check_in between "'.$start.'" and "'.$end.'" 
                 OR "'.$start.'" between  check_in  and  check_out  
                 OR  check_in between "'.$start.'" and "'.$end.'" 
-                OR "'.$end.'" between check_in  and check_out)');
+                OR "'.$end.'" between check_in  and check_out) and status != 2');
 
         })->whereDoesntHave('disableDates',function ($q) use ($start,$end){
             $q->whereRaw('(date between "'.$start.'" and "'.$end.'" )');
@@ -230,7 +230,9 @@ function disabledDays($villa)
 {
 
     $disabledDays = [];
-    $bookings = \Modules\Villamanager\Entities\Booking::where('villa_id',$villa->id)->whereRaw('( CURRENT_DATE BETWEEN check_in and check_out or (check_in > CURRENT_DATE) or (check_out < CURRENT_DATE) )')->orderBy('check_in')->get();
+    $bookings = \Modules\Villamanager\Entities\Booking::where('villa_id',$villa->id)->whereRaw('( CURRENT_DATE BETWEEN check_in and check_out or (check_in > CURRENT_DATE) or (check_out < CURRENT_DATE) )')
+        ->where('status','!=',2)
+        ->orderBy('check_in')->get();
 
     foreach($bookings as $booking){
 

@@ -45,11 +45,9 @@ if (! App::runningInConsole()) {
         'uses' => 'BookingController@paypalcancel',
     ]);
 
-    
     $router->get('/villas/{slug}/pdf',[
         'as' => 'villamanager.show.pdf',
         'uses' => 'PublicController@toPdf',
     ]);
-    
 
 }

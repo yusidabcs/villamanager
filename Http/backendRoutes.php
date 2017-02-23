@@ -324,7 +324,6 @@ $router->group(['prefix' =>'/villamanager'], function (Router $router) {
         'uses' => 'AreaController@destroy',
         'middleware' => 'can:villamanager.areas.destroy'
     ]);
-
     $router->bind('villa_category', function ($id) {
         return app(\Modules\Villamanager\Repositories\CategoryRepository::class)->find($id);
     });
@@ -364,5 +363,4 @@ $router->group(['prefix' =>'/villamanager'], function (Router $router) {
         'uses' => 'CategoryController@destroy',
         'middleware' => 'can:villamanager.categories.destroy'
     ]);
-
 });

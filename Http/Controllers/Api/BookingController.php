@@ -91,7 +91,12 @@ class BookingController extends BasePublicController
     public function unavailableDate(Request $request)
     {
         $bookings = $this->bookings->all();
+        return $bookings;
+        if(!$bookings)
+            $bookings = [];
         $disable_dates = $this->disable_dates->all();
+        if(!$disable_dates)
+            $disable_dates = [];
         return response()->json(array_merge($bookings,$disable_dates));
     }
     public function bookingdate(Request $request, $id)

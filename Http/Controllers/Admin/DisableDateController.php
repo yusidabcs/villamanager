@@ -38,6 +38,11 @@ class DisableDateController extends AdminBaseController {
             $rs->save();
         }
 
+        if($request->ajax()){
+            return response([
+                'message' => trans('core::core.messages.resource created', ['name' => trans('villamanager::disabledates.title.disabledates')])
+            ]);
+        }
         flash()->success(trans('core::core.messages.resource created', ['name' => trans('villamanager::disabledates.title.disabledates')]));
 
         return redirect()->back();
