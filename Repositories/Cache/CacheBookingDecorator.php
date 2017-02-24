@@ -19,13 +19,7 @@ class CacheBookingDecorator extends BaseCacheDecorator implements BookingReposit
 
     public function all()
     {
-        return $this->cache
-            ->tags($this->entityName, 'private')
-            ->remember("{$this->locale}.{$this->entityName}.all", $this->cacheTime,
-                function () {
-                    return $this->repository->all();
-                }
-            );
+        return $this->repository->all();
 
     }
 
