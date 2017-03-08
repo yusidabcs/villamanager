@@ -1,7 +1,12 @@
 <div class='form-group{{ $errors->has('name') ? ' has-error' : '' }} col-md-12'>
     {!! Form::label('name', trans('villamanager::villas.form.name')) !!}
     {!! Form::text('name', Input::old('name',$villa->name), ['class' => 'form-control', 'placeholder' => trans('villamanager::villas.form.name')]) !!}
-    {!! $errors->first('Name', '<span class="help-block">:message</span>') !!}
+    {!! $errors->first('name', '<span class="help-block">:message</span>') !!}
+</div>
+<div class='form-group{{ $errors->has('slug') ? ' has-error' : '' }} col-md-12'>
+    {!! Form::label('slug', trans('villamanager::villas.form.slug')) !!}
+    {!! Form::text('slug', Input::old('slug',$villa->slug), ['class' => 'form-control', 'placeholder' => trans('villamanager::villas.form.slug')]) !!}
+    {!! $errors->first('slug', '<span class="help-block">:message</span>') !!}
 </div>
 <div class='form-group{{ $errors->has('villa_category') ? ' has-error' : '' }} col-md-4'>
     {!! Form::label('villa_category', trans('villamanager::villas.form.category')) !!}

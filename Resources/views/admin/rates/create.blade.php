@@ -93,7 +93,7 @@
                 navLinks: false, // can click day/week names to navigate views
                 selectable: true,
                 selectHelper: true,
-
+                displayEventTime: false,
                 editable: true,
                 eventDurationEditable : true,
                 eventLimit: true, // allow "more" link when too many events
