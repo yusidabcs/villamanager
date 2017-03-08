@@ -1,5 +1,6 @@
 <?php namespace Modules\Villamanager\Http\Controllers\Admin;
 
+use Validator;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Modules\Core\Foundation\Asset\Manager\AssetManager;
@@ -63,6 +64,18 @@ class RateController extends AdminBaseController
      */
     public function store($villa_id,Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'name' => 'required',
+            'rate' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
         if($request->get('id') != '' && $request->get('id') != 'new_rate'){
             $rate = Rate::find($request->get('id'));
             $this->rate->update($rate, $request->all());

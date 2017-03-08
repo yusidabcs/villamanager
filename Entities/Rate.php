@@ -22,12 +22,10 @@ class Rate extends Model
     	return [
     		'id' => $this->id,
     		'title' => $this->name.' ~ ' .$this->rate . " USD ",
-    		'start' => $this->start_date.' 00:00:00',
+    		'start' => $this->start_date.' 1:00:00',
     		'end' => date_format($date, 'Y-m-d'),
     		'color' => "#".substr(md5(rand()), 0, 6),
             'editable' => true,
-
-            "allDay" => 'allDay'
 
 
     	];

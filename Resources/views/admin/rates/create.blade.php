@@ -93,43 +93,60 @@
                 navLinks: false, // can click day/week names to navigate views
                 selectable: true,
                 selectHelper: true,
+
+                editable: true,
+                eventDurationEditable : true,
+                eventLimit: true, // allow "more" link when too many events
                 select: function(start, end) {
-
-                    var temp = end;
-                    $('input[name=start_date]').val(start.format('YYYY-MM-DD'));
-                    $('input[name=end_date]').val(temp.subtract(1,'day').format('YYYY-MM-DD'));
-
-                    eventData = {
-                        title: 'Not saved yet',
+                    console.log(end);
+                    var eventData = {
+                        id : 'new_rate',
+                        _start : "new_rate",
+                        title : 'new rate',
+                        allDay : true,
                         start: start,
-                        end: end.add(1,'day')
+                        end: end.add('12','h')
                     };
-                    $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? =
-
+                    $('#calendar').fullCalendar('renderEvent', eventData, true);
                     $('#calendar').fullCalendar('unselect');
+                    eventx = $('#calendar').fullCalendar( 'clientEvents', 'new_rate' )[0];
+
+                    $('input[name=start_date]').val(eventData.start.format('YYYY-MM-DD'));
+                    $('input[name=rate]').val(parseInt(eventData.title.split(' ~ ')[1]));
+                    $('input[name=name]').val(eventData.title.split(' ~ ')[0]);
+                    $('input[name=id]').val(eventData.id);
+
+                    $('#start_date').datepicker('setDate', new Date(eventData.start));
+                    $('#end_date').datepicker('setDate', new Date(end.subtract(1, 'd')));
+
+                    $('#end_date').datepicker('setStartDate', new Date(end));
                 },
                 eventResizeStart : function (event, jsEvent, ui, view) {
                     start_resize = event.end;
                 },
                 eventResize: function(event, delta, revertFunc) {
-                    var temp = event;
-                    if(start_resize.isBefore(temp.end))
-                        event.end.add(24, 'h')
 
-                    $('input[name=start_date]').val(event.start.format('YYYY-MM-DD'));
-                    $('input[name=end_date]').val(temp.end.subtract(1, 'seconds').format('YYYY-MM-DD'));
-                    $('input[name=rate]').val(parseInt(event.title.split(' ~ ')[1]));
-                    $('input[name=name]').val(event.title.split(' ~ ')[0]);
-                    $('input[name=id]').val(event.id);
+                    if(start_resize.isBefore(event.end))
+                        event.end.add(12, 'h')
 
                     if (!confirm("is this okay?")) {
                         revertFunc();
+                    }else{
+
+                        $('input[name=start_date]').val(event.start.format('YYYY-MM-DD'));
+                        $('input[name=end_date]').val(event.end.subtract(1, 'seconds').format('YYYY-MM-DD'));
+                        $('input[name=rate]').val(parseInt(event.title.split(' ~ ')[1]));
+                        $('input[name=name]').val(event.title.split(' ~ ')[0]);
+                        $('input[name=id]').val(event.id);
+                        eventx = event;
+                        $('#start_date').datepicker('setStartDate', event.start.format('YYYY-MM-DD'));
+                        $('#start_date').datepicker('setEndDate', event.end.subtract(1, 'seconds').format('YYYY-MM-DD'));
+
+                        $('#end_date').datepicker('setStartDate', event.start.format('YYYY-MM-DD'));
                     }
 
+
                 },
-                editable: true,
-                eventDurationEditable : true,
-                eventLimit: true, // allow "more" link when too many events
                 selectOverlap: function(event) {
                     return event.rendering === 'background';
                 },
@@ -173,10 +190,17 @@
                 eventDrop: function(event, delta, revertFunc) {
 
                     $('input[name=start_date]').val(event.start.format('YYYY-MM-DD'));
-                    $('input[name=end_date]').val(event.end.subtract(1, 'seconds').format('YYYY-MM-DD'));
+                    $('input[name=end_date]').val(event.end.format('YYYY-MM-DD'));
                     $('input[name=rate]').val(parseInt(event.title.split(' ~ ')[1]));
                     $('input[name=name]').val(event.title.split(' ~ ')[0]);
                     $('input[name=id]').val(event.id);
+
+                    console.log(event);
+                    eventx = event;
+                    $('#start_date').datepicker('setStartDate', event.start.format('YYYY-MM-DD'));
+                    $('#start_date').datepicker('setEndDate', event.end.format('YYYY-MM-DD'));
+
+                    $('#end_date').datepicker('setStartDate', event.start.format('YYYY-MM-DD'));
 
                 },
 
@@ -187,8 +211,6 @@
                     $('input[name=rate]').val(parseInt(event.title.split(' ~ ')[1]));
                     $('input[name=name]').val(event.title.split(' ~ ')[0]);
                     $('input[name=id]').val(event.id);
-
-                    eventx = event;
                     $('#start_date').datepicker('setStartDate', event.start.format('YYYY-MM-DD'));
                     $('#start_date').datepicker('setEndDate', event.end.subtract(1, 'seconds').format('YYYY-MM-DD'));
 
@@ -198,13 +220,7 @@
                 dragRevertDuration : 0,
 
                 dayClick: function(date, allDay, jsEvent, view) {
-                    var now = new Date();
-                    if (date.setHours(0,0,0,0) < now.setHours(0,0,0,0)){
-                        alert('test');
-                    }
-                    else{
-                         return;
-                    }
+
                 },
 
         
@@ -216,81 +232,59 @@
             }).on('changeDate', function (selected) {
                 var minDate = new Date(selected.date.valueOf());
                 $('#end_date').datepicker('setStartDate', minDate);
-                start = minDate;
-                s = moment(start);
+                start = moment(minDate);
+                if(end != null)
+                    check_overlaping(start,end);
 
-                if(end!=null)
-                    check_overlaping(s,end);
-
-                if(eventx.id !== undefined){
-                    eventx.start = new Date(minDate.getTime() + 1380*60000);
-                    $('#calendar').fullCalendar('updateEvent', eventx);
-                }
             });
             $("#end_date").datepicker()
                     .on('changeDate', function (selected) {
                         var minDate = new Date(selected.date.valueOf());
-                        end = moment(minDate);
-                        start = moment(start);
-                        $('#start_date').datepicker('setEndDate', minDate);
 
-                        check_overlaping(start,end);
+                        end = moment(minDate);
+                        var e = end.clone().add(1,'d')
+                        $('#start_date').datepicker('setEndDate', minDate);
+                        check_overlaping(start,e);
 
                     });
 
-            function check_overlaping(start,end){
-                var allEvents = [];
-                allEvents = $('#calendar').fullCalendar('clientEvents');
+            function check_overlaping(start,end2){
+
+                var allEvents = $('#calendar').fullCalendar('clientEvents');
                 var status = true;
-                start.add(1,'day');
-                end.subtract(1,'day');
+
                 allEvents.forEach(function (e) {
-                    console.log(eventx.id);
                     if(e.id != eventx.id){
-                        if(e.start.format('YYYY-MM-DD') <= start.format('YYYY-MM-DD') && end.format('YYYY-MM-DD') <= e.end.format('YYYY-MM-DD')){
+                        if(e.start.format('YYYY-MM-DD') <= start.format('YYYY-MM-DD') && end2.format('YYYY-MM-DD') <= e.end.format('YYYY-MM-DD')){
                             status = false;
                             return;
                         }
                         // Range intersects with other start ?
-                        if((start.format('YYYY-MM-DD') <= e.start.format('YYYY-MM-DD') ) && (end.format('YYYY-MM-DD') <= e.end.format('YYYY-MM-DD') && end.format('YYYY-MM-DD') >= e.start.format('YYYY-MM-DD'))) {
+                        if((start.format('YYYY-MM-DD') <= e.start.format('YYYY-MM-DD') ) && (end2.format('YYYY-MM-DD') <= e.end.format('YYYY-MM-DD') && end2.format('YYYY-MM-DD') >= e.start.format('YYYY-MM-DD'))) {
                             status = false;
                             return ;
                         }
                         // Range intersects with other end ?
 
-                        if((start.format('YYYY-MM-DD') >= e.start.format('YYYY-MM-DD') && start.format('YYYY-MM-DD') <= e.end.format('YYYY-MM-DD')) && (end.format('YYYY-MM-DD') >= e.end.format('YYYY-MM-DD'))) {
+                        if((start.format('YYYY-MM-DD') > e.start.format('YYYY-MM-DD') && start.format('YYYY-MM-DD') < e.end.format('YYYY-MM-DD')) && (end2.format('YYYY-MM-DD') > e.end.format('YYYY-MM-DD'))) {
                             status = false;
                             return ;
                         }
                     }
+                    return;
 
                 });
                 if(status == false){
                     alert('Rate overlapping with other.');
-                    return;
-                }
-
-                start.subtract(1,'day');
-                end.add(2,'day');
-                if(eventx.id === undefined){
-                    var event = {};
-                    event.id = 'new_rate';
-                    event.title = 'new rate';
-                    event.start = start;
-                    event.end = end;
-                    event.allDay = 'allDay';
-
-                    $('#calendar').fullCalendar( 'removeEvents', event.id);
-                    $('#calendar').fullCalendar( 'renderEvent', event,true);
-
+                    return false;
                 }else{
-                    eventx.end = end.add(1,'d');
+                    eventx.start = start;
+                    eventx.end = end2;
                     $('#calendar').fullCalendar('updateEvent', eventx);
                 }
+
             }
 
         });
-
-
     </script>
 @stop
