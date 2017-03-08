@@ -21,6 +21,7 @@ return [
     ],
     'form' => [
         'name' => 'Villa Name',
+        'slug' => 'Slug',
         'location' => 'Location',
         'short_description' => 'Short Description',
         'description' => 'Description',
