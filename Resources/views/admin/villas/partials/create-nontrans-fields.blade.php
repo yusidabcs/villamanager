@@ -1,4 +1,3 @@
-
 <div class='form-group{{ $errors->has('name') ? ' has-error' : '' }} col-md-12'>
     {!! Form::label('name', trans('villamanager::villas.form.name')) !!}
     {!! Form::text('name', Input::old('name'), ['class' => 'form-control', 'placeholder' => trans('villamanager::villas.form.name')]) !!}

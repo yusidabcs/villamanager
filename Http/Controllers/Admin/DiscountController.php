@@ -61,6 +61,9 @@ class DiscountController extends AdminBaseController
 
     public function edit(Discount $discount)
     {
+
+        $this->assetPipeline->requireJs('bootstrap-datepicker.js');
+        $this->assetPipeline->requireCss('bootstrap-datepicker.css');
         $villas = $this->villa->all();
 
         if(request()->ajax()){

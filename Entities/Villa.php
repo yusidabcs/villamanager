@@ -135,10 +135,11 @@ class Villa extends Model
     public function discount_price($status = false)
     {
         $discount = $this->discount;
+
         if($discount->type == 1){
-            $price = $this->price - $discount->discount;
+            $price = $this->cheapest_rates->rate - $discount->discount;
         }else{
-            $price = $this->price - ($this->price * $discount->discount / 100);
+            $price = $this->cheapest_rates->rate - ($this->cheapest_rates->rate * $discount->discount / 100);
         }
 
         if($status){
