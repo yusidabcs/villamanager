@@ -15,6 +15,14 @@ class Area extends Model{
         'parent_id',
     ];
 
+    public function scopeParent($query){
+        return $query->where('parent_id',0);
+    }
+
+    public function childs(){
+        return $this->hasMany(Area::class,'parent_id');
+    }
+
     public function villa(){
         return $this->hasMany(Villa::class,'villa_id');
     }

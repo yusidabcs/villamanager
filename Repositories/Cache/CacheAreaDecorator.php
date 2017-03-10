@@ -20,4 +20,11 @@ class CacheAreaDecorator extends BaseCacheDecorator implements AreaRepository
         $this->entityName = 'villamanager.areas';
         $this->repository = $booking;
     }
+
+    public function parent()
+    {
+        return $this->repository->parent();
+    }
+
+
 }

@@ -291,8 +291,12 @@ function price_format($a,$status=true){ // masuk 500000 ,, keluar jadi Rp. 500.0
 }
 
 
-function villa_areas()
+function villa_areas($status = false)
 {
+    if($status){
+        return \Modules\Villamanager\Entities\Area::parent()->get();
+    }
+
     return \Modules\Villamanager\Entities\Area::all();
 }
 

@@ -22,6 +22,11 @@ class EloquentAreaRepository extends EloquentBaseRepository implements AreaRepos
         return $this->model->all();
     }
 
+    public function parent()
+    {
+        return $this->model->parent()->get();
+    }
+
 
     public function create($data)
     {

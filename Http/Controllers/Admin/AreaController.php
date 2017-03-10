@@ -28,13 +28,13 @@ class AreaController extends AdminBaseController
 
     public function index()
     {
-        $areas = $this->area->all();
+        $areas = $this->area->parent();
         return view('villamanager::admin.areas.index', compact('areas'));
     }
 
     public function create()
     {
-        $areas = $this->area->all();
+        $areas = $this->area->parent();
         return view('villamanager::admin.areas.create', compact('areas'));
     }
 
@@ -48,7 +48,7 @@ class AreaController extends AdminBaseController
     public function edit(Area $area)
     {
         $thumbnail = $this->file->findFileByZoneForEntity('area_image', $area);
-        $areas = $this->area->all();
+        $areas = $this->area->parent();
         return view('villamanager::admin.areas.edit', compact('area','areas','thumbnail'));
     }
 

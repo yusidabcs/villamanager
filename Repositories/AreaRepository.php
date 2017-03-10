@@ -12,5 +12,5 @@ use Modules\Core\Repositories\BaseRepository;
 
 interface AreaRepository extends BaseRepository
 {
-
+    public function parent();
 }

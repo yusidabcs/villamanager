@@ -25,10 +25,9 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table class="data-table table table-bordered table-hover">
+                    <table class="table table-bordered table-hover">
                         <thead>
                         <tr>
-
                             <th>{{ trans('villamanager::areas.table.name') }}</th>
                             <th data-sortable="false">{{ trans('core::core.table.actions') }}</th>
                         </tr>
@@ -50,6 +49,24 @@
                                 </div>
                             </td>
                         </tr>
+                        @if($area->childs())
+                            @foreach($area->childs as $area2)
+                                <tr >
+                                    <td style="padding-left: 30px">
+                                        <a href="{{ route('admin.villamanager.area.edit', [$area2->id]) }}">
+                                            - {{ $area2->name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{{ route('admin.villamanager.area.edit', [$area2->id]) }}" class="btn btn-default btn-flat"><i class="fa fa-pencil"></i></a>
+
+                                            <button class="btn btn-danger btn-flat" data-toggle="modal" data-target="#modal-delete-confirmation" data-action-target="{{ route('admin.villamanager.area.destroy', [$area2->id]) }}"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                         <?php endforeach; ?>
                         <?php endif; ?>
                         </tbody>
