@@ -31,7 +31,7 @@
                         <?php foreach ($categories as $category): ?>
                         <tr>
                             <td>
-                                <a href="{{ route('admin.villamanager.category.edit', [$category->id]) }}">
+                                <a data-remote="{{ route('admin.villamanager.category.edit', [$category->id]) }}" type="button" data-toggle="modal" data-target="#edit-category">
                                     {{ $category->name }}
                                 </a>
                             </td>
