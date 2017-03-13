@@ -49,6 +49,13 @@ class Villa extends Model
     public function maxPerson(){
         return $this->maxPersonFacility->first() ? $this->maxPersonFacility->first()->pivot->value : 1;
     }
+
+    public function bedroom(){
+        return $this->bedroomFacility->first() ? $this->bedroomFacility->first()->pivot->value : 1;
+    }
+    public function bedroomFacility(){
+        return $this->belongsToMany(Facility::class,'villamanager__villa_facility','villa_id','facility_id')->withPivot('status','value')->wherePivot('status',1)->where('key','bedroom');
+    }
     public function maxPersonFacility(){
         return $this->belongsToMany(Facility::class,'villamanager__villa_facility','villa_id','facility_id')->withPivot('status','value')->wherePivot('status',1)->where('key','max_person');   
     }

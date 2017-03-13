@@ -85,6 +85,12 @@ function get_villas($limit = null,$options = []){
             });
         }
     }
+
+    if($request->has('bedroom')){
+        $villa = $villa->whereHas('bedroomFacility',function ($q) use ($request){
+            $q->where('value','=',$request->get('bedroom'));
+        });
+    }
     $villa = $villa->paginate($limit ? $limit : 6);
 	return $villa;
 }
