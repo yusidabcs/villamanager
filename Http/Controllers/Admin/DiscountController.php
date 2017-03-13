@@ -52,16 +52,13 @@ class DiscountController extends AdminBaseController
     public function store(StoreDiscountRequest $request)
     {
         $this->discount->create($request->all());
-
-        flash()->success(trans('core::core.messages.resource created', ['name' => trans('villamanager::discounts.title.discounts')]));
-
-        return redirect()->to(route('admin.villamanager.discount.index'));
+        return redirect()->to(route('admin.villamanager.discount.index'))
+            ->withSuccess(trans('core::core.messages.resource created', ['name' => trans('villamanager::discounts.title.discounts')]));
     }
 
 
     public function edit(Discount $discount)
     {
-
         $this->assetPipeline->requireJs('bootstrap-datepicker.js');
         $this->assetPipeline->requireCss('bootstrap-datepicker.css');
         $villas = $this->villa->all();
@@ -72,20 +69,19 @@ class DiscountController extends AdminBaseController
         return view('villamanager::admin.discounts.edit', compact('discount','villas'));
     }
 
-    public function update(Request $request,Discount $discount)
+    public function update(StoreDiscountRequest $request,Discount $discount)
     {
         $this->discount->update($discount, $request->all());
-        flash()->success(trans('core::core.messages.resource updated', ['name' => trans('villamanager::discounts.title.discounts')]));
-        return redirect()->back();
+        return redirect()->back()
+            ->withSuccess(trans('core::core.messages.resource updated', ['name' => trans('villamanager::discounts.title.discounts')]));
     }
 
     public function destroy(Discount $discount)
     {
         $this->discount->destroy($discount);
 
-        flash()->success(trans('core::core.messages.resource deleted', ['name' => trans('villamanager::discounts.title.discounts')]));
-
-        return redirect()->route('admin.villamanager.discount.index');
+        return redirect()->route('admin.villamanager.discount.index')
+            ->withSuccess(trans('core::core.messages.resource updated', ['name' => trans('villamanager::discounts.title.discounts')]));
     }
 
 

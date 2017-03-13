@@ -21,7 +21,6 @@
 
             <div class="col-md-6">
                 <div class="nav-tabs-custom">
-                    @include('partials.form-tab-headers')
                     <div class="tab-content">
                         <div class="box box-primary">
                             <div class="box-header">
@@ -81,7 +80,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {!! Form::label('start_date', trans('villamanager::discounts.form.start_date')) !!}
-                                        <div class="input-group date" id="start_date"  data-date-format="yyyy-mm-dd"
+                                        <div class="input-group {{ $errors->has('start_date') ? ' has-error' : '' }} date" id="start_date"  data-date-format="yyyy-mm-dd"
                                              data-date-autoclose="true" >
                                             <input type="text" class="form-control" name="start_date" readonly="" value="{{ old('start_date')  }}">
                                             <div class="input-group-addon">
@@ -92,7 +91,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         {!! Form::label('end_date', trans('villamanager::discounts.form.end_date')) !!}
-                                        <div class="input-group date" id="end_date"  data-date-format="yyyy-mm-dd"
+                                        <div class="input-group {{ $errors->has('end_date') ? ' has-error' : '' }} date" id="end_date"  data-date-format="yyyy-mm-dd"
                                              data-date-autoclose="true" >
                                             <input type="text" class="form-control" name="end_date" readonly="" value="{{ old('end_date')  }}">
                                             <div class="input-group-addon">
@@ -125,10 +124,10 @@
                     <div class="box-body">
                         <div class='form-group{{ $errors->has('villa_id') ? ' has-error' : '' }}'>
                             {!! Form::label('type', trans('villamanager::discounts.form.villa')) !!}
-                            <select class="form-control select2" required="" name="villa_id">
+                            <select class="form-control select2" required="" name="villa_id[]" multiple="multiple">
                                 <option value="0" >All Villas</option>
                                 @foreach($villas as $villa)
-                                <option value="{{ $villa->id  }}" {{ old('villa_id') == $villa->id ? 'selected' : '' }}>{{ $villa->name }}</option>
+                                <option value="{{ $villa->id  }}" {{ in_array($villa->id,old('villa_id',[])) == $villa->id ? 'selected' : '' }}>{{ $villa->name }}</option>
                                 @endforeach
                             </select>
                             {!! $errors->first('villa_id', '<span class="help-block">:message</span>') !!}

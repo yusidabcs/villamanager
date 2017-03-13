@@ -18,4 +18,16 @@ class Discount extends Model {
         'villa_id'
     ];
 
+    public function scopeActive($query){
+        return $query->whereRaw('claim <= `total`')
+            ->whereRaw('(CURRENT_DATE between start_date and end_date )');
+    }
+
+    public function villas(){
+        $rs = [];
+        foreach (json_decode($this->villa_id) as $villa_id){
+            $rs[] = Villa::find($villa_id);
+        }
+        return $rs;
+    }
 }

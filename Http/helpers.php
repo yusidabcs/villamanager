@@ -315,3 +315,7 @@ function villa_category_alt($category){
     return url(count($category->files) > 0 ? $category->files[0]->alt_attribute : '');
 
 }
+
+function get_discounts(){
+    return \Modules\Villamanager\Entities\Discount::active()->get();
+}

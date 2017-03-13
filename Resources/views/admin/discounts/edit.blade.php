@@ -124,10 +124,10 @@
                 <div class="box-body">
                     <div class='form-group{{ $errors->has('villa_id') ? ' has-error' : '' }}'>
                         {!! Form::label('type', trans('villamanager::discounts.form.villa')) !!}
-                        <select class="form-control select2" required="" name="villa_id">
+                        <select class="form-control select2" required="" name="villa_id[]" multiple="multiple">
                             <option value="0" >All Villas</option>
                             @foreach($villas as $villa)
-                                <option value="{{ $villa->id  }}" {{ old('villa_id') ? old('villa_id') == $villa->id ? 'selected' : '' : $discount->villa_id == $villa->id ? 'selected' : '' }}>{{ $villa->name }}</option>
+                                <option value="{{ $villa->id  }}" {{ in_array($villa->id,old('villa_id',json_decode($discount->villa_id))) ? 'selected' : '' }} >{{ $villa->name }}</option>
                             @endforeach
                         </select>
                         {!! $errors->first('villa_id', '<span class="help-block">:message</span>') !!}

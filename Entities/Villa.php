@@ -129,12 +129,13 @@ class Villa extends Model
 
     public function discount()
     {
-        return $this->hasOne(Discount::class,'villa_id');
+        $discount = Discount::active()->whereRaw('villa_id RLIKE "'.$this->id.'"');
+        return $discount;
     }
 
     public function discount_price($status = false)
     {
-        $discount = $this->discount;
+        $discount = $this->discount();
 
         if($discount->type == 1){
             $price = $this->cheapest_rates->rate - $discount->discount;
