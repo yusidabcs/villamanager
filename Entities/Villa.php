@@ -136,7 +136,7 @@ class Villa extends Model
 
     public function discount()
     {
-        $discount = Discount::active()->whereRaw('villa_id RLIKE "'.$this->id.'"');
+        $discount = Discount::active()->whereRaw('villa_id RLIKE "'.$this->id.'"')->first();
         return $discount;
     }
 
