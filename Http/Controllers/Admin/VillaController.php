@@ -2,6 +2,7 @@
 
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
+use Modules\Blog\Entities\Status;
 use Modules\Core\Contracts\Authentication;
 use Modules\Core\Console\Installers\Scripts\ModuleAssets;
 use Modules\Core\Foundation\Asset\Manager\AssetManager;
@@ -22,13 +23,14 @@ class VillaController extends BaseVillaModuleController
     /**
      * @var VillaRepository
      */
-    protected $villa,$facilities,$area,$auth,$category;
+    protected $villa,$facilities,$area,$auth,$category,$status;
 
     public function __construct(VillaRepository $villa,
                                 FacilityRepository $facilities,
                                 AreaRepository $areaRepository,
                                 Authentication $authentication,
-                                CategoryRepository $categoryRepository)
+                                CategoryRepository $categoryRepository,
+                                Status $status)
     {
         parent::__construct();
 
@@ -37,6 +39,7 @@ class VillaController extends BaseVillaModuleController
         $this->area = $areaRepository;
         $this->auth = $authentication;
         $this->category = $categoryRepository;
+        $this->status = $status;
         $this->assetManager->addAssets([
             'villa.css' => Module::asset('villamanager:css/villa.css')
         ]);
@@ -66,9 +69,10 @@ class VillaController extends BaseVillaModuleController
         $facilities = $this->facilities->all();
         $areas = $this->area->all();
         $categories = $this->category->all();
+        $statuses = $this->status->lists();
 
         $files = File::whereIn('id',session('villa_image'))->get();
-        return view('villamanager::admin.villas.create', compact('facilities','files','areas','categorties'));
+        return view('villamanager::admin.villas.create', compact('facilities','files','areas','categories','statuses'));
     }
 
     /**
@@ -100,7 +104,8 @@ class VillaController extends BaseVillaModuleController
         $facilities = $this->facilities->all();
         $areas = $this->area->all();
         $categories = $this->category->all();
-        return view('villamanager::admin.villas.edit', compact('facilities','villa','areas','categories'));
+        $statuses = $this->status->lists();
+        return view('villamanager::admin.villas.edit', compact('facilities','villa','areas','categories','statuses'));
     }
 
     /**

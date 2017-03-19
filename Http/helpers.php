@@ -91,7 +91,7 @@ function get_villas($limit = null,$options = []){
             $q->where('value','=',$request->get('bedroom'));
         });
     }
-    $villa = $villa->paginate($limit ? $limit : 6);
+    $villa = $villa->whereStatus(\Modules\Blog\Entities\Status::PUBLISHED)->paginate($limit ? $limit : 6);
 	return $villa;
 }
 

@@ -20,12 +20,26 @@
     </select>
     {!! $errors->first('villa_category', '<span class="help-block">:message</span>') !!}
 </div>
+
+<div class="clearfix"></div>
+
+
+<div class="form-group col-md-2">
+    {!! Form::label("status", 'Villa status:') !!}
+    <select name="status" id="status" class="form-control">
+        <?php foreach ($statuses as $id => $status): ?>
+        <option value="{{ $id }}" {{ old('status', $villa->status) == $id ? 'selected' : '' }}>{{ $status }}</option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
 <div class="clearfix"></div>
 <div class="checkbox col-md-4" style="margin-left: 20px">
     <label>
-        <input type="checkbox" value="1" {{ $villa->featured == 1 ? 'checked' : '' }} name="featured">
+        <input type="checkbox" value="1" name="featured" {{ $villa->featured == 1 ? 'checked' : '' }}>
         {{ trans('villamanager::villas.form.featured') }}
     </label>
 </div>
 {!! $errors->first('featured', '<span class="help-block">:message</span>') !!}
+<div class="clearfix"></div>
 

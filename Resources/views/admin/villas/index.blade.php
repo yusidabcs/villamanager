@@ -30,6 +30,7 @@
                         <tr>
 
                             <th>{{ trans('villamanager::villas.table.name') }}</th>
+                            <th>Status</th>
                             <th>{{ trans('core::core.table.created at') }}</th>
                             <th data-sortable="false">{{ trans('core::core.table.actions') }}</th>
                         </tr>
@@ -42,6 +43,25 @@
                             <a href="{{ route('admin.villamanager.villa.edit', [$villa->id]) }}">
                                     {{ $villa->name }}
                                     </a>
+                            </td>
+                            <td>
+                                @if($villa->status == 0)
+                                    <span class="label bg-red">
+                                        Draf
+                                    </span>
+                                @elseif($villa->status == 1)
+                                    <span class="label bg-orange">
+                                        Draf Review
+                                    </span>
+                                @elseif($villa->status == 2)
+                                    <span class="label bg-green">
+                                        Published
+                                    </span>
+                                @elseif($villa->status == 3)
+                                    <span class="label bg-purple">
+                                        Unpublished
+                                    </span>
+                                @endif
                             </td>
                             <td>
                                 <a href="{{ route('admin.villamanager.villa.edit', [$villa->id]) }}">

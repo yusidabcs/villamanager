@@ -28,6 +28,7 @@ class Villa extends Model
         'area_id',
         'featured',
         'category_id',
+        'status',
     	// Translatable fields
     	'short_description',
 	    'description',

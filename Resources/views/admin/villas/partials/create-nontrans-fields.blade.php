@@ -17,6 +17,17 @@
 </div>
 <div class="clearfix"></div>
 
+
+<div class="form-group col-md-2">
+    {!! Form::label("status", 'Villa status:') !!}
+    <select name="status" id="status" class="form-control">
+        <?php foreach ($statuses as $id => $status): ?>
+        <option value="{{ $id }}" {{ old('status', 0) == $id ? 'selected' : '' }}>{{ $status }}</option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
+<div class="clearfix"></div>
 <div class="checkbox col-md-4" style="margin-left: 20px">
     <label>
         <input type="checkbox" value="1" name="featured">
@@ -24,3 +35,4 @@
     </label>
 </div>
 {!! $errors->first('featured', '<span class="help-block">:message</span>') !!}
+<div class="clearfix"></div>
