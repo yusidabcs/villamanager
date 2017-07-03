@@ -1,0 +1,28 @@
+{
+    "name": "Villamanager",
+    "alias": "villamanager",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 1,
+    "providers": [
+        "Modules\\Villamanager\\Providers\\VillamanagerServiceProvider",
+        "Modules\\Villamanager\\Providers\\RouteServiceProvider",
+        "Stevebauman\\Translation\\TranslationServiceProvider",
+        "Netshell\\Paypal\\PaypalServiceProvider"
+    ],
+    "aliases": {
+        "Translation" : "Stevebauman\\Translation\\Facades\\Translation",
+        "Paypal" : "Netshell\\Paypal\\Facades\\Paypal"
+
+    },
+    "widgets": [
+        "Modules\\Villamanager\\Widgets\\VillasWidget",
+        "Modules\\Villamanager\\Widgets\\BookingWidget"
+    ],
+    "files": [
+        "Http/helpers.php"
+    ],
+    "requires": []
+
+}
